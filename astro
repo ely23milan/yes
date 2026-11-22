@@ -1,0 +1,2798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASTROKIT: Beyond the Visible — Grade 9 Space Radiation & EM Spectrum Classroom</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet" />
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #020617;
+      color: #f1f5f9;
+      overflow-x: hidden;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.35);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(56, 189, 248, 0.6);
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-cyan-500 selection:text-slate-950">
+  <!-- Main Root Mount -->
+  <div id="app" class="min-h-screen flex flex-col">
+    <div class="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+      <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center animate-bounce mb-4 shadow-lg shadow-cyan-500/30">
+        <i data-lucide="rocket" class="w-6 h-6 text-white"></i>
+      </div>
+      <h2 class="text-xl font-bold tracking-wide text-white">Initializing ASTROKIT Telemetry...</h2>
+      <p class="text-slate-400 text-sm mt-1">Connecting to Space Classroom Database</p>
+    </div>
+  </div>
+
+  <!-- Application Logic & Firebase Integration -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import {
+      getAuth,
+      signInAnonymously,
+      signInWithCustomToken,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      updateDoc,
+      deleteDoc,
+      onSnapshot,
+      collection
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // ========================================================================
+    // 1. FIREBASE CONFIGURATION & INITIALIZATION
+    // ========================================================================
+    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+    const app = Object.keys(firebaseConfig).length > 0 ? initializeApp(firebaseConfig) : null;
+    const auth = app ? getAuth(app) : null;
+    const db = app ? getFirestore(app) : null;
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'astrokit-beyond-visible';
+
+    // ========================================================================
+    // 2. COMPLETE GRADE 9 SCIENCE CURRICULUM (ASTROKIT PDF)
+    // ========================================================================
+    const DEFAULT_CURRICULUM = {
+      lessons: [
+        {
+          id: 'intro-space-radiation',
+          number: '01',
+          title: 'Introduction to Space Radiation',
+          category: 'Foundations',
+          summary: 'Discover how energy travels across the vacuum of space without a physical medium.',
+          content: `Unlike sound waves, which require air, water, or solid matter to travel, electromagnetic (EM) radiation moves effortlessly through the near-total vacuum of outer space at the cosmic speed limit: the speed of light (c ≈ 3.0 × 10⁸ m/s).\n\nEvery celestial body—from our Sun and distant blue supergiants to cold interstellar dust clouds and the Earth itself—emits electromagnetic radiation across a vast range of wavelengths. Because human eyes can only detect a tiny sliver of this energy (Visible Light), astronomers rely on specialized space and ground-based observatories to decode invisible signals from the universe.`,
+          keyTakeaways: [
+            'Space radiation consists of oscillating electric and magnetic fields.',
+            'All electromagnetic waves travel at 300,000 km/s in a vacuum.',
+            'Observing beyond visible light reveals hidden cosmic phenomena like black holes, star nurseries, and the Big Bang afterglow.'
+          ]
+        },
+        {
+          id: 'em-waves',
+          number: '02',
+          title: 'Electromagnetic Waves',
+          category: 'Wave Mechanics',
+          summary: 'Understand wavelength, frequency, amplitude, and the inverse relationship governing wave energy.',
+          content: `An electromagnetic wave is a transverse wave formed by synchronized, perpendicular oscillations of electric and magnetic fields. Three fundamental properties define every EM wave:\n\n1. Wavelength (λ): The physical distance between two consecutive crests or troughs, measured in meters (m), micrometers (μm), or nanometers (nm).\n2. Frequency (f): The number of complete wave cycles passing a given point per second, measured in Hertz (Hz).\n3. Photon Energy (E): Electromagnetic radiation also behaves as discrete packets of energy called photons.\n\nThe Wave Equation (c = λf) establishes an inverse relationship: as wavelength decreases, frequency increases. Furthermore, Planck's relation (E = hf) shows that higher-frequency waves carry significantly higher photon energy.`,
+          keyTakeaways: [
+            'Wavelength and frequency are inversely proportional (c = λf).',
+            'Frequency and photon energy are directly proportional (E = hf).',
+            'Short wavelengths mean high frequency and high energy.'
+          ]
+        },
+        {
+          id: 'em-spectrum',
+          number: '03',
+          title: 'The Electromagnetic Spectrum',
+          category: 'Core Concept',
+          summary: 'Explore the continuous arrangement of all electromagnetic radiation from low-energy radio waves to high-energy gamma rays.',
+          content: `The Electromagnetic Spectrum is the complete continuum of all possible frequencies of electromagnetic radiation. Although it is a continuous band, scientists divide it into seven primary regions based on wavelength, frequency, and how the waves interact with matter.\n\nArranged from longest wavelength (lowest frequency & energy) to shortest wavelength (highest frequency & energy):\nRadio Waves → Microwaves → Infrared → Visible Light → Ultraviolet → X-rays → Gamma Rays.\n\nEarth's atmosphere acts as a protective shield, blocking most high-energy UV, X-ray, and Gamma radiation, as well as much of the Infrared band. This is why astronomers launch space telescopes like Hubble, James Webb, and Chandra into orbit.`,
+          keyTakeaways: [
+            'The 7 regions form a continuous spectrum ordered by wavelength and frequency.',
+            'Visible light occupies only a tiny fraction of the total spectrum (400 nm to 700 nm).',
+            'Atmospheric opacity requires space-based telescopes for X-ray, Gamma, and most Infrared astronomy.'
+          ]
+        },
+        {
+          id: 'seven-em-waves',
+          number: '04',
+          title: 'The Seven Types of Electromagnetic Waves',
+          category: 'Deep Dive',
+          summary: 'Examine the properties, everyday uses, and astronomical roles of all seven EM bands.',
+          content: `Each region of the electromagnetic spectrum interacts differently with matter and reveals unique temperatures and processes in the cosmos:\n\n• Radio Waves: Longest wavelengths (> 1 mm). Used in communications and radio astronomy to map neutral hydrogen gas and pulsars.\n• Microwaves: 1 mm to 1 m. Used in radar and satellite links; in astronomy, they reveal the Cosmic Microwave Background (CMB)—fossil radiation from the early universe.\n• Infrared (IR): 700 nm to 1 mm. Felt as heat; penetrates dense dust clouds to reveal newly forming protostars and exoplanet atmospheres.\n• Visible Light: 400 nm to 700 nm (ROYGBIV). Detected by human eyes and optical telescopes; reveals star surface temperatures and chemical spectra.\n• Ultraviolet (UV): 10 nm to 400 nm. Emitted by very hot, young massive stars and active galactic nuclei.\n• X-rays: 0.01 nm to 10 nm. Produced by multimillion-degree plasma in supernova remnants, neutron stars, and matter spiraling into black holes.\n• Gamma Rays: < 0.01 nm. Highest energy; generated by nuclear fusion in stellar cores, solar flares, and violent gamma-ray bursts (GRBs).`,
+          keyTakeaways: [
+            'Cooler objects (like dust and planets) peak in Infrared and Radio.',
+            'Sun-like stars peak in Visible Light.',
+            'Extreme, violent cosmic events emit X-rays and Gamma Rays.'
+          ]
+        },
+        {
+          id: 'astronomy-em',
+          number: '05',
+          title: 'Astronomy and Electromagnetic Radiation',
+          category: 'Applied Astrophysics',
+          summary: 'Learn how blackbody radiation and multi-wavelength astronomy decode star temperatures and compositions.',
+          content: `Every opaque object with a temperature above absolute zero (0 K) emits thermal radiation known as Blackbody Radiation. According to Wien's Displacement Law, the peak wavelength of emitted radiation shifts toward shorter wavelengths as an object gets hotter:\n\n• Cooler objects (~300 K, like Earth) emit primarily in the Infrared.\n• Warm objects (~3,000 K, like a filament bulb or red dwarf) peak in near-Infrared / red Visible light.\n• Hot stars (~5,800 K, like our Sun) peak in the middle of the Visible spectrum.\n• Very hot stars (~10,000 K+, like Sirius A) peak in blue/Ultraviolet wavelengths.\n\nBy combining data from multiple observatories—such as ALMA (Radio/Microwave), JWST (Infrared), Hubble (Visible/UV), Chandra (X-ray), and Fermi (Gamma-ray)—scientists construct a complete multi-wavelength portrait of the universe.`,
+          keyTakeaways: [
+            'Hotter stars emit bluer, shorter-wavelength light and have vastly higher total intensity.',
+            'Multi-wavelength astronomy combines observations across all 7 EM bands.',
+            'Spectroscopy identifies chemical elements in distant stars from their light signatures.'
+          ]
+        },
+        {
+          id: 'learning-objectives',
+          number: '06',
+          title: 'Learning Objectives',
+          category: 'Curriculum Guide',
+          summary: 'Grade 9 Science competency targets for Space Radiation and the Electromagnetic Spectrum.',
+          content: `Upon completing the ASTROKIT: Beyond the Visible learning module, Grade 9 students will be able to:\n\n1. Compare the relative wavelengths, frequencies, and energies of the different regions of the electromagnetic spectrum.\n2. Explain the inverse relationship between wavelength and frequency, and the direct relationship between frequency and energy.\n3. Analyze how surface temperature affects the peak wavelength and radiation intensity of celestial objects using blackbody simulation data.\n4. Identify practical and astronomical applications of each of the seven electromagnetic wave types.\n5. Match real-world astronomical phenomena and space observatories to the appropriate electromagnetic wave band.`,
+          keyTakeaways: [
+            'Aligned with Grade 9 Science Force, Motion, and Energy (Electromagnetic Spectrum) standards.',
+            'Integrates simulation inquiry, collaborative classification, and astrophysical problem-solving.'
+          ]
+        },
+        {
+          id: 'resources-guide',
+          number: '08',
+          title: 'Supplementary Resources & User Guide',
+          category: 'Reference',
+          summary: 'How to navigate ASTROKIT, use Cosmo AI responsibly, and explore curated NASA/PhET tools.',
+          content: `ASTROKIT Classroom User Guide:\n• Step 1: Take the Pre-Assessment ("What I Know?") to establish your baseline understanding.\n• Step 2: Study Modules 01–05 and explore the Interactive EM Spectrum visualizer.\n• Step 3: Complete Activity 1 (Blackbody Simulation), Activity 2 (Decode the EM Spectrum), and Activity 3 (Spectrum Seekers). Save drafts anytime and submit when ready.\n• Step 4: Use Cosmo (AI Space Learning Guide) in the bottom-right corner whenever you need hints, simplified explanations, or feedback on your reasoning.\n• Step 5: Complete the Post-Assessment ("What I Have Learned?") to measure your growth.\n\nCurated External Resources:\n• PhET Interactive Simulations — Blackbody Spectrum (University of Colorado Boulder)\n• NASA Science — Tour of the Electromagnetic Spectrum\n• NASA Eyes on the Solar System & James Webb Space Telescope Multi-Wavelength Gallery`,
+          keyTakeaways: [
+            'Always submit your own original explanations; Cosmo guides your thinking rather than giving answers.',
+            'Teachers monitor real-time progress and provide personalized feedback on your activity outputs.'
+          ]
+        }
+      ],
+      emWaves: [
+        {
+          id: 'radio',
+          name: 'Radio Waves',
+          order: 1,
+          wavelength: '> 1 mm (up to kilometers)',
+          frequency: '< 300 GHz (3 × 10⁸ Hz)',
+          energy: 'Lowest (< 1.24 meV)',
+          color: '#ef4444',
+          gradient: 'from-red-500 to-orange-500',
+          waveFreqVisual: 1.5,
+          characteristics: 'Longest wavelengths and lowest frequencies in the EM spectrum. Easily diffract around obstacles and pass through Earth’s atmosphere.',
+          everydayApps: 'FM/AM radio broadcasting, television signals, Wi-Fi, Bluetooth, and GPS navigation.',
+          astroApps: 'Mapping cold neutral hydrogen gas clouds in galaxies, detecting pulsars, and operating giant radio interferometers like ALMA and the Very Large Array (VLA).',
+          celestialObjects: 'Pulsars, cold interstellar hydrogen clouds, active galactic nuclei (quasars), and planetary magnetospheres (Jupiter).',
+          fact: 'The Event Horizon Telescope linked radio dishes across the entire Earth to capture the first-ever image of a black hole shadow in galaxy M87.'
+        },
+        {
+          id: 'microwave',
+          name: 'Microwaves',
+          order: 2,
+          wavelength: '1 mm – 1 m',
+          frequency: '300 MHz – 300 GHz',
+          energy: 'Very Low (1.24 μeV – 1.24 meV)',
+          color: '#f97316',
+          gradient: 'from-orange-500 to-amber-500',
+          waveFreqVisual: 2.5,
+          characteristics: 'Shorter than radio waves; absorbed by water molecules and partially absorbed by atmospheric water vapor.',
+          everydayApps: 'Microwave ovens, weather radar, aviation tracking, and satellite telecommunications.',
+          astroApps: 'Studying the Cosmic Microwave Background (CMB) radiation and probing dense molecular clouds where stars form.',
+          celestialObjects: 'The Cosmic Microwave Background (afterglow of the Big Bang), cold molecular clouds, and planetary atmospheres.',
+          fact: 'In 1965, Arno Penzias and Robert Wilson discovered the Cosmic Microwave Background as persistent static noise in a microwave antenna, confirming the Big Bang theory.'
+        },
+        {
+          id: 'infrared',
+          name: 'Infrared (IR)',
+          order: 3,
+          wavelength: '700 nm – 1 mm',
+          frequency: '300 GHz – 430 THz',
+          energy: 'Low (1.24 meV – 1.7 eV)',
+          color: '#eab308',
+          gradient: 'from-amber-500 to-yellow-400',
+          waveFreqVisual: 4,
+          characteristics: 'Emitted by all warm objects as thermal radiation. Passes through thick cosmic dust clouds that block visible light.',
+          everydayApps: 'Thermal imaging cameras, TV remote controls, night-vision goggles, and fiber-optic communications.',
+          astroApps: 'Peering inside dusty stellar nurseries to observe protostars, brown dwarfs, and analyzing exoplanet atmospheres using the James Webb Space Telescope (JWST).',
+          celestialObjects: 'Protostars, cool red dwarfs, exoplanets, brown dwarfs, and interstellar dust nebulae (e.g., Pillars of Creation).',
+          fact: 'Because the universe is expanding, light from the earliest galaxies is stretched into the infrared—making JWST an infrared time machine.'
+        },
+        {
+          id: 'visible',
+          name: 'Visible Light',
+          order: 4,
+          wavelength: '400 nm – 700 nm',
+          frequency: '430 THz – 750 THz',
+          energy: 'Moderate (1.7 eV – 3.1 eV)',
+          color: '#22c55e',
+          gradient: 'from-emerald-400 via-cyan-400 to-blue-500',
+          waveFreqVisual: 6,
+          characteristics: 'The narrow band detectable by the human eye (Red, Orange, Yellow, Green, Blue, Indigo, Violet). Passes cleanly through Earth’s atmosphere.',
+          everydayApps: 'Human vision, photography, optical microscopes, lasers, and solar photovoltaic panels.',
+          astroApps: 'Optical astronomy with Hubble Space Telescope and ground observatories to determine stellar surface temperatures, colors, and chemical composition via spectra.',
+          celestialObjects: 'Main-sequence stars like our Sun (~5,800 K), planets, moons, emission nebulae, and galaxies.',
+          fact: 'Our Sun peaks right in the green-yellow portion of visible light, which is why human eyes evolved peak sensitivity to this exact wavelength range.'
+        },
+        {
+          id: 'ultraviolet',
+          name: 'Ultraviolet (UV)',
+          order: 5,
+          wavelength: '10 nm – 400 nm',
+          frequency: '750 THz – 30 PHz',
+          energy: 'High (3.1 eV – 124 eV)',
+          color: '#3b82f6',
+          gradient: 'from-blue-500 to-indigo-500',
+          waveFreqVisual: 8.5,
+          characteristics: 'Higher energy than visible light; capable of causing fluorescence and ionizing atoms. Mostly absorbed by Earth’s ozone layer.',
+          everydayApps: 'Sterilizing medical equipment, forensic detection, curing dental resins, and tanning/vitamin D synthesis.',
+          astroApps: 'Tracing hot, young O- and B-type massive stars, studying star-forming rings in galaxies, and analyzing planetary auroras.',
+          celestialObjects: 'Hot blue supergiants (like Sirius A and Rigel), white dwarfs, planetary nebulae, and Jupiter’s auroras.',
+          fact: 'Bees and several bird species can see ultraviolet patterns on flowers that are completely invisible to human eyes.'
+        },
+        {
+          id: 'xray',
+          name: 'X-Rays',
+          order: 6,
+          wavelength: '0.01 nm – 10 nm',
+          frequency: '30 PHz – 30 EHz',
+          energy: 'Very High (124 eV – 124 keV)',
+          color: '#a855f7',
+          gradient: 'from-indigo-500 to-purple-500',
+          waveFreqVisual: 12,
+          characteristics: 'Extremely short wavelengths and high penetrating power. Completely blocked by Earth’s upper atmosphere.',
+          everydayApps: 'Medical bone radiography, airport security baggage scanners, and industrial weld inspection.',
+          astroApps: 'Observing superheated gas (millions of Kelvin) around black holes, neutron stars, galaxy clusters, and supernova remnants using Chandra X-ray Observatory.',
+          celestialObjects: 'Black hole accretion disks, neutron stars, supernova remnants (Crab Nebula), and hot intracluster gas.',
+          fact: 'X-rays cannot be focused with normal mirrors because they pass right through them; X-ray telescopes use nested barrel-shaped grazing-incidence mirrors.'
+        },
+        {
+          id: 'gamma',
+          name: 'Gamma Rays',
+          order: 7,
+          wavelength: '< 0.01 nm',
+          frequency: '> 30 EHz (3 × 10¹⁹ Hz)',
+          energy: 'Highest (> 124 keV)',
+          color: '#ec4899',
+          gradient: 'from-purple-500 to-pink-500',
+          waveFreqVisual: 16,
+          characteristics: 'Shortest wavelengths, highest frequencies, and most energetic photons in the universe. Produced by nuclear and subatomic processes.',
+          everydayApps: 'Targeted cancer radiation therapy (Gamma Knife), food irradiation, and nuclear medicine PET scans.',
+          astroApps: 'Detecting the universe’s most energetic explosions—Gamma-Ray Bursts (GRBs), colliding neutron stars, and blazar jets using the Fermi Space Telescope.',
+          celestialObjects: 'Gamma-ray bursts (GRBs), magnetars, solar flares, colliding neutron stars, and stellar cores.',
+          fact: 'A single 10-second Gamma-Ray Burst can release more energy than our Sun will emit over its entire 10-billion-year lifetime.'
+        }
+      ],
+      activities: {
+        activity1: {
+          id: 'activity1',
+          title: 'Activity 1 — Exploring Space Radiation',
+          subtitle: 'Simulation-Based Investigation (PhET Blackbody Spectrum)',
+          objectives: [
+            'Investigate how the temperature of an object affects the peak wavelength and intensity of emitted radiation.',
+            'Compare the blackbody radiation curves of Sirius A, the Sun, a Light Bulb, and Earth.',
+            'Explain the relationship between temperature, wavelength, and electromagnetic spectrum regions.'
+          ],
+          instructions: 'Open the PhET Blackbody Spectrum simulation below. Use the temperature slider (and zoom controls on the axes) to set the temperature corresponding to Sirius A (~9,900 K), the Sun (~5,800 K), a Light Bulb (~3,000 K), and Earth (~300 K). Record the Temperature (K), Peak Wavelength (μm), and Intensity (W/m²) in the table, then answer the four guide questions.',
+          rubric: [
+            { criteria: 'Data Accuracy (Table)', points: 10, desc: 'All 4 objects have accurate Temperature, Peak Wavelength, and Intensity values from PhET.' },
+            { criteria: 'Scientific Reasoning (Guide Questions)', points: 15, desc: 'Answers clearly explain the inverse temperature-wavelength shift and intensity growth.' },
+            { criteria: 'Completeness & Clarity', points: 5, desc: 'All fields completed using proper Grade 9 scientific vocabulary.' }
+          ],
+          rows: [
+            { id: 'sirius', object: 'Sirius A', defaultTemp: '9900' },
+            { id: 'sun', object: 'Sun', defaultTemp: '5800' },
+            { id: 'bulb', object: 'Light Bulb', defaultTemp: '3000' },
+            { id: 'earth', object: 'Earth', defaultTemp: '300' }
+          ],
+          guideQuestions: [
+            '1. How does the peak wavelength change as the temperature of the object increases from Earth to Sirius A?',
+            '2. Which region of the electromagnetic spectrum corresponds to the peak wavelength of the Sun compared to Earth?',
+            '3. How does the total intensity (area under the curve) change when temperature increases?',
+            '4. Based on your observations, how can astronomers determine the surface temperature of a distant star without visiting it?'
+          ]
+        },
+        activity2: {
+          id: 'activity2',
+          title: 'Activity 2 — Decode the Electromagnetic Spectrum',
+          subtitle: 'Interactive Ordering Challenge & Wave Research Output',
+          instructions: 'Part A: Arrange the seven electromagnetic wave cards in the correct order from LONGEST wavelength (lowest frequency) to SHORTEST wavelength (highest frequency), then verify your sequence.\nPart B: Complete your Wave Research Brief on an assigned or chosen electromagnetic wave, detailing its wavelength range, frequency range, astronomical applications, and group/individual presentation summary.'
+        },
+        activity3: {
+          id: 'activity3',
+          title: 'Activity 3 — Spectrum Seekers',
+          subtitle: 'Collaborative Astrophysical Problem-Solving',
+          instructions: 'Analyze each of the seven astronomical scenarios below. Select the electromagnetic wave band best suited to observe or explain each cosmic phenomenon, and write a clear scientific justification referencing wavelength, frequency, energy, or atmospheric transmission.',
+          scenarios: [
+            {
+              id: 'sc1',
+              title: 'Scenario 1: Piercing the Stellar Nursery',
+              description: 'Astronomers want to observe baby stars (protostars) forming deep inside the dense, dusty pillars of the Eagle Nebula, where visible light is completely blocked by dust grains.',
+              correctWave: 'Infrared (IR)',
+              explanation: 'Infrared waves have longer wavelengths than visible light, allowing them to pass through dense interstellar dust clouds without scattering, while detecting the thermal heat of young protostars.'
+            },
+            {
+              id: 'sc2',
+              title: 'Scenario 2: Echoes of the Big Bang',
+              description: 'Cosmologists are mapping faint, uniform background radiation coming from every direction in the sky at a temperature of just 2.7 Kelvin—the cooled fossil light from the early universe.',
+              correctWave: 'Microwaves',
+              explanation: 'As the universe expanded over 13.8 billion years, early radiation stretched into the Microwave band (Cosmic Microwave Background).'
+            },
+            {
+              id: 'sc3',
+              title: 'Scenario 3: Matter Spiraling into a Black Hole',
+              description: 'Gas torn from a companion star forms an accretion disk around a stellar-mass black hole, heating up to over 10 million Kelvin before crossing the event horizon.',
+              correctWave: 'X-Rays',
+              explanation: 'Plasma heated to millions of Kelvin emits high-energy X-rays, which are observed by space telescopes like NASA’s Chandra X-ray Observatory.'
+            },
+            {
+              id: 'sc4',
+              title: 'Scenario 4: Mapping Cold Hydrogen in Spiral Arms',
+              description: 'An observatory on Earth wants to trace the spiral arms of the Milky Way by detecting the 21-cm emission line from cold, neutral hydrogen gas clouds day and night.',
+              correctWave: 'Radio Waves',
+              explanation: 'The 21-cm line lies in the Radio Wave region, which penetrates Earth’s atmosphere effortlessly and is emitted by cold interstellar hydrogen.'
+            },
+            {
+              id: 'sc5',
+              title: 'Scenario 5: Cosmic Cataclysm from Colliding Neutron Stars',
+              description: 'Space detectors record an intense, brief flash of the highest-energy photons in the universe lasting just 2 seconds, triggered by two merging neutron stars in a distant galaxy.',
+              correctWave: 'Gamma Rays',
+              explanation: 'Colliding neutron stars and hypernovae produce Gamma-Ray Bursts (GRBs), releasing the shortest-wavelength, highest-energy Gamma Rays.'
+            },
+            {
+              id: 'sc6',
+              title: 'Scenario 6: Hunting Hot, Young Massive Stars',
+              description: 'Astronomers study a starburst galaxy to pinpoint clusters of newly born O- and B-type stars with surface temperatures exceeding 25,000 Kelvin.',
+              correctWave: 'Ultraviolet (UV)',
+              explanation: 'Extremely hot massive stars (25,000+ K) have peak emissions shifted into the high-energy Ultraviolet region of the spectrum.'
+            },
+            {
+              id: 'sc7',
+              title: 'Scenario 7: Analyzing Sun-like Stars and Exoplanet Transits',
+              description: 'An optical space telescope measures the slight dimming of a 5,800 K star’s brightness as a rocky planet passes directly in front of it.',
+              correctWave: 'Visible Light',
+              explanation: 'Sun-like stars (~5,800 K) emit their peak intensity in Visible Light, making optical transit photometry ideal for measuring brightness dips.'
+            }
+          ]
+        }
+      },
+      assessments: {
+        pre: {
+          id: 'pre',
+          title: 'PRE-ASSESSMENT: WHAT I KNOW?',
+          description: 'Diagnostic check before starting the ASTROKIT learning modules. Answer all 5 questions to establish your baseline.',
+          questions: [
+            {
+              id: 'pre1',
+              question: '1. How do electromagnetic waves travel from the Sun and distant stars to Earth through outer space?',
+              options: [
+                'By vibrating air and hydrogen molecules in space',
+                'As oscillating electric and magnetic fields that do not require a medium',
+                'Through gravitational currents carried by solar wind',
+                'Only when reflected off planets and asteroids'
+              ],
+              correctIndex: 1,
+              explanation: 'Electromagnetic waves are self-propagating transverse waves of electric and magnetic fields, allowing them to travel through the vacuum of space at the speed of light.'
+            },
+            {
+              id: 'pre2',
+              question: '2. Which list correctly arranges electromagnetic waves from LONGEST wavelength to SHORTEST wavelength?',
+              options: [
+                'Gamma rays, X-rays, Ultraviolet, Visible, Infrared, Microwaves, Radio waves',
+                'Radio waves, Microwaves, Infrared, Visible light, Ultraviolet, X-rays, Gamma rays',
+                'Radio waves, Infrared, Microwaves, Visible light, X-rays, Ultraviolet, Gamma rays',
+                'Visible light, Radio waves, Microwaves, Infrared, Ultraviolet, X-rays, Gamma rays'
+              ],
+              correctIndex: 1,
+              explanation: 'Radio waves have the longest wavelengths (>1 mm) and Gamma rays have the shortest (<0.01 nm).'
+            },
+            {
+              id: 'pre3',
+              question: '3. What happens to the frequency and energy of an electromagnetic wave as its wavelength becomes shorter?',
+              options: [
+                'Both frequency and energy decrease',
+                'Frequency increases, while energy decreases',
+                'Both frequency and energy increase',
+                'Frequency stays constant, while energy increases'
+              ],
+              correctIndex: 2,
+              explanation: 'Wavelength and frequency are inversely proportional (c = λf), while photon energy is directly proportional to frequency (E = hf). Shorter wavelength = higher frequency and higher energy.'
+            },
+            {
+              id: 'pre4',
+              question: '4. Why do astronomers place X-ray and Gamma-ray telescopes in orbit above Earth rather than on mountaintops?',
+              options: [
+                'To get physically closer to distant galaxies',
+                'Because Earth’s atmosphere absorbs almost all high-energy X-rays and Gamma rays',
+                'Because gravity on Earth bends X-rays away from mirrors',
+                'To avoid interference from radio stations'
+              ],
+              correctIndex: 1,
+              explanation: 'Earth’s atmosphere blocks X-rays, Gamma rays, and most UV/Infrared radiation, requiring orbital space observatories to detect them.'
+            },
+            {
+              id: 'pre5',
+              question: '5. According to blackbody radiation principles, how does the light emitted by a very hot star (10,000 K) compare to a cooler star (3,000 K)?',
+              options: [
+                'The hotter star peaks at a shorter (bluer/UV) wavelength and emits much higher intensity',
+                'The hotter star peaks at a longer (red/infrared) wavelength',
+                'Both stars peak at the exact same wavelength',
+                'The cooler star emits higher-energy gamma radiation'
+              ],
+              correctIndex: 0,
+              explanation: 'Wien’s Law states hotter objects emit peak radiation at shorter wavelengths (blue/UV) and radiate vastly more energy per unit area.'
+            }
+          ]
+        },
+        post: {
+          id: 'post',
+          title: 'POST-ASSESSMENT: WHAT I HAVE LEARNED?',
+          description: 'Final mission evaluation covering space radiation, blackbody spectra, and multi-wavelength astronomy.',
+          questions: [
+            {
+              id: 'post1',
+              question: '1. In the PhET Blackbody Spectrum investigation, what happens to the peak wavelength and radiation intensity when increasing temperature from the Sun (5,800 K) to Sirius A (9,900 K)?',
+              options: [
+                'Peak wavelength shifts longer into infrared; intensity decreases',
+                'Peak wavelength shifts shorter toward ultraviolet; intensity increases dramatically',
+                'Peak wavelength stays in visible green; intensity doubles',
+                'Peak wavelength shifts to radio waves; intensity remains unchanged'
+              ],
+              correctIndex: 1,
+              explanation: 'Increasing temperature shifts the blackbody peak to shorter wavelengths (from visible ~0.50 μm into UV ~0.29 μm) and sharply increases radiation intensity.'
+            },
+            {
+              id: 'post2',
+              question: '2. Which electromagnetic wave band is best suited for peering through thick cosmic dust clouds to observe newly forming protostars?',
+              options: [
+                'Gamma Rays',
+                'Ultraviolet',
+                'Infrared',
+                'Visible Light'
+              ],
+              correctIndex: 2,
+              explanation: 'Infrared wavelengths are longer than dust grain sizes, allowing IR light (detected by telescopes like JWST) to pass through opaque dust clouds.'
+            },
+            {
+              id: 'post3',
+              question: '3. Compare Gamma Rays and Radio Waves across the electromagnetic spectrum:',
+              options: [
+                'Gamma rays have shorter wavelengths, higher frequencies, and higher photon energy than radio waves',
+                'Gamma rays travel faster through space than radio waves',
+                'Radio waves have higher frequencies and shorter wavelengths than gamma rays',
+                'Both have the same energy but different speeds'
+              ],
+              correctIndex: 0,
+              explanation: 'All EM waves travel at the speed of light c in a vacuum, but Gamma rays sit at the high-frequency, short-wavelength, high-energy extreme.'
+            },
+            {
+              id: 'post4',
+              question: '4. What cosmic phenomenon is observed using Microwave astronomy to study the earliest light from the Big Bang?',
+              options: [
+                'Solar flares on main-sequence stars',
+                'Black hole accretion disks',
+                'The Cosmic Microwave Background (CMB)',
+                'Planetary auroras'
+              ],
+              correctIndex: 2,
+              explanation: 'The Cosmic Microwave Background (CMB) is the stretched thermal afterglow of the early universe peaking in the microwave band.'
+            },
+            {
+              id: 'post5',
+              question: '5. A space observatory detects a sudden 3-second burst of photons with wavelengths shorter than 0.01 nanometers coming from a distant galaxy. Which wave band and event was detected?',
+              options: [
+                'Radio waves from a cold hydrogen cloud',
+                'Gamma rays from a Gamma-Ray Burst (GRB) / neutron star merger',
+                'Infrared radiation from an exoplanet atmosphere',
+                'Visible light from a red giant star'
+              ],
+              correctIndex: 1,
+              explanation: 'Wavelengths below 0.01 nm correspond to Gamma Rays, emitted during ultra-energetic cosmic events such as Gamma-Ray Bursts.'
+            }
+          ]
+        }
+      }
+    };
+
+    // ========================================================================
+    // 3. CENTRAL APPLICATION STATE
+    // ========================================================================
+    const state = {
+      firebaseUser: null,
+      authReady: false,
+      userProfile: null,
+      authMode: 'login',
+      authRole: 'student',
+      authError: '',
+
+      // Cloud collections
+      allUsers: [],
+      classes: [],
+      enrollments: [],
+      announcements: [],
+      submissions: [],
+      assessmentsData: [],
+      curriculum: structuredClone(DEFAULT_CURRICULUM),
+
+      // Navigation & UI
+      activeTab: 'dashboard',
+      selectedClassId: null,
+      selectedLessonId: 'intro-space-radiation',
+      selectedWaveId: 'visible',
+      activeActivityTab: 'activity1',
+      activeAssessmentTab: 'pre',
+      readingMode: false,
+      mobileMenuOpen: false,
+      toast: null,
+
+      // Modals
+      showCreateClassModal: false,
+      editingClass: null,
+      selectedStudentProgress: null,
+      reviewingSubmission: null,
+      submissionFilter: 'All',
+
+      // Student Working Data
+      act1Rows: {
+        sirius: { temp: '', wavelength: '', intensity: '' },
+        sun: { temp: '', wavelength: '', intensity: '' },
+        bulb: { temp: '', wavelength: '', intensity: '' },
+        earth: { temp: '', wavelength: '', intensity: '' }
+      },
+      act1Answers: ['', '', '', ''],
+      act2Order: [
+        'Gamma Rays',
+        'Infrared (IR)',
+        'Radio Waves',
+        'X-Rays',
+        'Visible Light',
+        'Microwaves',
+        'Ultraviolet (UV)'
+      ],
+      act2CheckResult: null,
+      act2Brief: {
+        assignedWave: 'Infrared (IR)',
+        wavelengthRange: '',
+        frequencyRange: '',
+        astroApplications: '',
+        researchFindings: ''
+      },
+      act3Responses: {
+        sc1: { wave: '', explanation: '' },
+        sc2: { wave: '', explanation: '' },
+        sc3: { wave: '', explanation: '' },
+        sc4: { wave: '', explanation: '' },
+        sc5: { wave: '', explanation: '' },
+        sc6: { wave: '', explanation: '' },
+        sc7: { wave: '', explanation: '' }
+      },
+      quizAnswers: {},
+      currentQuizIdx: 0,
+
+      // Content Editor
+      editorLessonId: 'intro-space-radiation',
+      editorDraft: null,
+      editorPreview: false,
+
+      // Cosmo AI
+      cosmoOpen: false,
+      cosmoMode: 'Explain This',
+      cosmoLoading: false,
+      cosmoMessages: [
+        {
+          sender: 'cosmo',
+          text: "Greetings, Explorer! I'm Cosmo, your AI Space Learning Guide. Ask me to explain a concept, give you a hint, or check your scientific reasoning!"
+        }
+      ]
+    };
+
+    // ========================================================================
+    // 4. UTILITIES & GEMINI AI INTEGRATION
+    // ========================================================================
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function showToast(msg, type = 'success') {
+      state.toast = { msg, type };
+      render();
+      setTimeout(() => {
+        state.toast = null;
+        render();
+      }, 3800);
+    }
+
+    function generateClassCode() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let suffix = '';
+      for (let i = 0; i < 5; i++) {
+        suffix += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return `ASTRO-${suffix}`;
+    }
+
+    function formatDate(ts) {
+      if (!ts) return '—';
+      try {
+        return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+      } catch {
+        return '—';
+      }
+    }
+
+    async function askCosmoAI(userMessage) {
+      const apiKey = ""; // Canvas injects key automatically
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+      const currentLessonObj = state.curriculum.lessons.find((l) => l.id === state.selectedLessonId);
+      const contextSummary =
+        state.activeTab === 'lessons'
+          ? `Lesson: ${currentLessonObj?.title}`
+          : state.activeTab === 'activities'
+          ? `Activity: ${state.curriculum.activities[state.activeActivityTab]?.title}`
+          : state.activeTab === 'assessments'
+          ? `Assessment: ${state.curriculum.assessments[state.activeAssessmentTab]?.title}`
+          : state.activeTab === 'spectrum'
+          ? 'Interactive Electromagnetic Spectrum Visualizer'
+          : 'ASTROKIT Dashboard';
+
+      const isAssessmentActive = state.activeTab === 'assessments';
+
+      const systemInstruction = `You are COSMO, an enthusiastic, patient, and knowledgeable Grade 9 Science AI Space Learning Guide for "ASTROKIT: Beyond the Visible — Exploring Space Radiation and the Electromagnetic Spectrum".
+
+CRITICAL PEDAGOGICAL RULES:
+1. You are a Socratic learning guide, NOT a teacher replacement and NOT an answer-key machine.
+2. NEVER directly give away final answers to quizzes, assessments, or activity questions.
+3. Keep explanations clear, encouraging, accurate, and tailored to Grade 9 Science students (ages 14-15).
+4. Use astronomy examples (stars, nebulae, JWST, Chandra, blackbody radiation, wavelength, frequency, energy).
+5. Break ideas into digestible steps and end with a gentle guiding question.
+6. Stay strictly within ASTROKIT subject matter.
+${isAssessmentActive ? '7. STRICT ASSESSMENT SAFEGUARD ACTIVE: The student currently has an assessment open. Do NOT reveal any answer keys or correct options. Only provide conceptual explanations and guiding questions.' : ''}
+
+Current AI Help Mode: ${state.cosmoMode}
+Current Lesson/Activity Context: ${contextSummary}`;
+
+      const payload = {
+        contents: [{ parts: [{ text: userMessage }] }],
+        systemInstruction: { parts: [{ text: systemInstruction }] }
+      };
+
+      let delay = 1000;
+      for (let attempt = 0; attempt < 4; attempt++) {
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const result = await response.json();
+          const reply = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (reply) return reply;
+          throw new Error('Empty response');
+        } catch {
+          if (attempt === 3) {
+            return "I'm experiencing a brief cosmic signal delay! Remember: across the Electromagnetic Spectrum, shorter wavelengths always mean higher frequency and higher photon energy (c = λf). Which part of the problem would you like to break down first?";
+          }
+          await new Promise((r) => setTimeout(r, delay));
+          delay *= 2;
+        }
+      }
+    }
+
+    // ========================================================================
+    // 5. FIREBASE AUTHENTICATION & REAL-TIME LISTENERS
+    // ========================================================================
+    if (auth) {
+      (async () => {
+        try {
+          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+            await signInWithCustomToken(auth, __initial_auth_token);
+          } else {
+            await signInAnonymously(auth);
+          }
+        } catch (err) {
+          console.error('Auth error:', err);
+        } finally {
+          state.authReady = true;
+          render();
+        }
+      })();
+
+      onAuthStateChanged(auth, (user) => {
+        state.firebaseUser = user;
+        if (user && db) {
+          attachFirestoreListeners();
+        }
+        render();
+      });
+    } else {
+      state.authReady = true;
+      render();
+    }
+
+    let listenersAttached = false;
+    function attachFirestoreListeners() {
+      if (listenersAttached || !db || !state.firebaseUser) return;
+      listenersAttached = true;
+
+      onSnapshot(
+        collection(db, 'artifacts', appId, 'public', 'data', 'users'),
+        (snap) => {
+          state.allUsers = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          if (!state.userProfile && state.firebaseUser) {
+            const matched = state.allUsers.find(
+              (u) => u.authUid === state.firebaseUser.uid && u.activeSession
+            );
+            if (matched) {
+              state.userProfile = matched;
+              syncStudentDraftsFromCloud();
+            }
+          }
+          render();
+        },
+        (err) => console.error('Users listener error:', err)
+      );
+
+      onSnapshot(
+        collection(db, 'artifacts', appId, 'public', 'data', 'classes'),
+        (snap) => {
+          state.classes = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          ensureSelectedClass();
+          render();
+        },
+        (err) => console.error('Classes listener error:', err)
+      );
+
+      onSnapshot(
+        collection(db, 'artifacts', appId, 'public', 'data', 'enrollments'),
+        (snap) => {
+          state.enrollments = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          ensureSelectedClass();
+          render();
+        },
+        (err) => console.error('Enrollments listener error:', err)
+      );
+
+      onSnapshot(
+        collection(db, 'artifacts', appId, 'public', 'data', 'announcements'),
+        (snap) => {
+          state.announcements = snap.docs
+            .map((d) => ({ id: d.id, ...d.data() }))
+            .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+          render();
+        },
+        (err) => console.error('Announcements listener error:', err)
+      );
+
+      onSnapshot(
+        collection(db, 'artifacts', appId, 'public', 'data', 'submissions'),
+        (snap) => {
+          state.submissions = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          syncStudentDraftsFromCloud();
+          render();
+        },
+        (err) => console.error('Submissions listener error:', err)
+      );
+
+      onSnapshot(
+        collection(db, 'artifacts', appId, 'public', 'data', 'assessments'),
+        (snap) => {
+          state.assessmentsData = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          render();
+        },
+        (err) => console.error('Assessments listener error:', err)
+      );
+
+      onSnapshot(
+        doc(db, 'artifacts', appId, 'public', 'data', 'curriculum', 'master'),
+        (docSnap) => {
+          if (docSnap.exists()) {
+            state.curriculum = { ...state.curriculum, ...docSnap.data() };
+            render();
+          }
+        },
+        (err) => console.error('Curriculum listener error:', err)
+      );
+    }
+
+    function getMyClasses() {
+      if (!state.userProfile) return [];
+      if (state.userProfile.role === 'teacher') {
+        return state.classes.filter((c) => c.teacherId === state.userProfile.id);
+      }
+      const ids = state.enrollments
+        .filter((e) => e.studentId === state.userProfile.id)
+        .map((e) => e.classId);
+      return state.classes.filter((c) => ids.includes(c.id) && !c.archived);
+    }
+
+    function ensureSelectedClass() {
+      const mine = getMyClasses();
+      if (mine.length > 0 && (!state.selectedClassId || !mine.some((c) => c.id === state.selectedClassId))) {
+        state.selectedClassId = mine[0].id;
+      } else if (mine.length === 0) {
+        state.selectedClassId = null;
+      }
+    }
+
+    function syncStudentDraftsFromCloud() {
+      if (!state.userProfile || state.userProfile.role !== 'student' || !state.selectedClassId) return;
+      const s1 = state.submissions.find(
+        (s) => s.studentId === state.userProfile.id && s.classId === state.selectedClassId && s.activityId === 'activity1'
+      );
+      if (s1?.data) {
+        if (s1.data.rows) state.act1Rows = structuredClone(s1.data.rows);
+        if (s1.data.answers) state.act1Answers = [...s1.data.answers];
+      }
+      const s2 = state.submissions.find(
+        (s) => s.studentId === state.userProfile.id && s.classId === state.selectedClassId && s.activityId === 'activity2'
+      );
+      if (s2?.data) {
+        if (s2.data.order) state.act2Order = [...s2.data.order];
+        if (s2.data.brief) state.act2Brief = { ...state.act2Brief, ...s2.data.brief };
+      }
+      const s3 = state.submissions.find(
+        (s) => s.studentId === state.userProfile.id && s.classId === state.selectedClassId && s.activityId === 'activity3'
+      );
+      if (s3?.data?.responses) {
+        state.act3Responses = structuredClone(s3.data.responses);
+      }
+    }
+
+    // ========================================================================
+    // 6. GLOBAL ACTION HANDLERS (ATTACHED TO WINDOW FOR INLINE EVENT DISPATCH)
+    // ========================================================================
+    window.astroActions = {
+      setAuthMode(mode) {
+        state.authMode = mode;
+        state.authError = '';
+        render();
+      },
+      setAuthRole(role) {
+        state.authRole = role;
+        render();
+      },
+      async submitAuth(e) {
+        e.preventDefault();
+        const form = e.target;
+        const email = (form.email?.value || '').trim().toLowerCase();
+        const name = (form.fullName?.value || '').trim();
+        if (!email) {
+          state.authError = 'Please enter your email address.';
+          render();
+          return;
+        }
+        if (state.authMode === 'register') {
+          if (!name) {
+            state.authError = 'Please enter your full name.';
+            render();
+            return;
+          }
+          if (state.allUsers.some((u) => u.email === email)) {
+            state.authError = 'An account with this email already exists. Switch to Sign In.';
+            render();
+            return;
+          }
+          const newProfile = {
+            id: `user_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+            authUid: state.firebaseUser?.uid || 'local',
+            name,
+            email,
+            role: state.authRole,
+            activeSession: true,
+            aiQueriesCount: 0,
+            createdAt: Date.now()
+          };
+          if (db && state.firebaseUser) {
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', newProfile.id), newProfile);
+          }
+          state.userProfile = newProfile;
+          state.activeTab = 'dashboard';
+          showToast(`Welcome aboard ASTROKIT, ${newProfile.name}!`);
+        } else {
+          const existing = state.allUsers.find((u) => u.email === email);
+          if (!existing) {
+            state.authError = 'No account found with that email. Please create an account first.';
+            render();
+            return;
+          }
+          const updated = { ...existing, authUid: state.firebaseUser?.uid || 'local', activeSession: true };
+          if (db && state.firebaseUser) {
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', existing.id), {
+              authUid: updated.authUid,
+              activeSession: true
+            });
+          }
+          state.userProfile = updated;
+          state.activeTab = 'dashboard';
+          ensureSelectedClass();
+          syncStudentDraftsFromCloud();
+          showToast(`Welcome back, ${updated.name}!`);
+        }
+      },
+      async logout() {
+        if (db && state.firebaseUser && state.userProfile) {
+          try {
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', state.userProfile.id), {
+              activeSession: false
+            });
+          } catch {}
+        }
+        state.userProfile = null;
+        state.selectedClassId = null;
+        state.activeTab = 'dashboard';
+        render();
+      },
+      setTab(tab) {
+        state.activeTab = tab;
+        state.mobileMenuOpen = false;
+        render();
+      },
+      toggleMobileMenu(open) {
+        state.mobileMenuOpen = open;
+        render();
+      },
+      toggleReadingMode() {
+        state.readingMode = !state.readingMode;
+        render();
+      },
+      selectClass(classId) {
+        state.selectedClassId = classId;
+        syncStudentDraftsFromCloud();
+        render();
+      },
+      openCreateClassModal(open) {
+        state.showCreateClassModal = open;
+        render();
+      },
+      async createClass(e) {
+        e.preventDefault();
+        const form = e.target;
+        const name = form.className.value.trim();
+        if (!name || !state.userProfile) return;
+
+        let code = generateClassCode();
+        while (state.classes.some((c) => c.code === code)) {
+          code = generateClassCode();
+        }
+        const newClass = {
+          id: `class_${Date.now()}`,
+          name,
+          subject: form.subject.value.trim() || 'Grade 9 Science — Space Radiation',
+          gradeLevel: form.gradeLevel.value.trim() || 'Grade 9',
+          section: form.section.value.trim() || 'Section A',
+          description: form.description.value.trim(),
+          teacherId: state.userProfile.id,
+          teacherName: state.userProfile.name,
+          code,
+          archived: false,
+          allowRetake: true,
+          createdAt: Date.now()
+        };
+        if (db && state.firebaseUser) {
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'classes', newClass.id), newClass);
+        }
+        state.selectedClassId = newClass.id;
+        state.showCreateClassModal = false;
+        showToast(`Class created! Share code ${code} with your students.`);
+      },
+      copyText(text, label) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast(label || 'Copied to clipboard!');
+      },
+      openEditClass(classId) {
+        const cls = state.classes.find((c) => c.id === classId);
+        state.editingClass = cls ? { ...cls } : null;
+        render();
+      },
+      async saveEditClass(e) {
+        e.preventDefault();
+        if (!state.editingClass || !db || !state.firebaseUser) return;
+        const form = e.target;
+        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'classes', state.editingClass.id), {
+          name: form.className.value.trim(),
+          section: form.section.value.trim(),
+          allowRetake: form.allowRetake.checked
+        });
+        state.editingClass = null;
+        showToast('Class settings updated.');
+      },
+      async toggleArchiveClass(classId) {
+        const cls = state.classes.find((c) => c.id === classId);
+        if (!cls || !db || !state.firebaseUser) return;
+        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'classes', cls.id), {
+          archived: !cls.archived
+        });
+        showToast(cls.archived ? 'Class restored to active.' : 'Class archived.');
+      },
+      async joinClass(e) {
+        e.preventDefault();
+        if (!state.userProfile || state.userProfile.role !== 'student') return;
+        const codeInput = e.target.joinCode.value.trim().toUpperCase();
+        if (!codeInput) return;
+
+        const target = state.classes.find((c) => c.code === codeInput && !c.archived);
+        if (!target) {
+          showToast('Invalid or archived class code. Please verify with your teacher.', 'error');
+          return;
+        }
+        if (state.enrollments.some((en) => en.classId === target.id && en.studentId === state.userProfile.id)) {
+          showToast('You are already enrolled in this class!', 'error');
+          return;
+        }
+        const enr = {
+          id: `enr_${target.id}_${state.userProfile.id}`,
+          classId: target.id,
+          studentId: state.userProfile.id,
+          studentName: state.userProfile.name,
+          studentEmail: state.userProfile.email,
+          status: 'Active',
+          joinedAt: Date.now()
+        };
+        if (db && state.firebaseUser) {
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'enrollments', enr.id), enr);
+        }
+        e.target.reset();
+        state.selectedClassId = target.id;
+        showToast(`Successfully joined ${target.name}!`);
+      },
+      async removeStudent(enrollmentId) {
+        if (!db || !state.firebaseUser) return;
+        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'enrollments', enrollmentId));
+        showToast('Student removed from class roster.');
+      },
+      async postAnnouncement(e) {
+        e.preventDefault();
+        const text = e.target.announcementText.value.trim();
+        if (!text || !state.selectedClassId || !state.userProfile) return;
+        const ann = {
+          id: `ann_${Date.now()}`,
+          classId: state.selectedClassId,
+          authorName: state.userProfile.name,
+          content: text,
+          createdAt: Date.now()
+        };
+        if (db && state.firebaseUser) {
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'announcements', ann.id), ann);
+        }
+        e.target.reset();
+        showToast('Announcement posted to class stream.');
+      },
+      selectLesson(id) {
+        state.selectedLessonId = id;
+        render();
+      },
+      selectWave(id) {
+        state.selectedWaveId = id;
+        render();
+      },
+      setActivityTab(tab) {
+        state.activeActivityTab = tab;
+        render();
+      },
+      updateAct1Cell(rowId, field, value) {
+        state.act1Rows[rowId][field] = value;
+      },
+      updateAct1Answer(idx, value) {
+        state.act1Answers[idx] = value;
+      },
+      moveAct2Wave(idx, dir) {
+        const nextIdx = idx + dir;
+        if (nextIdx < 0 || nextIdx >= state.act2Order.length) return;
+        const arr = [...state.act2Order];
+        [arr[idx], arr[nextIdx]] = [arr[nextIdx], arr[idx]];
+        state.act2Order = arr;
+        render();
+      },
+      checkAct2Order() {
+        const correct = [
+          'Radio Waves',
+          'Microwaves',
+          'Infrared (IR)',
+          'Visible Light',
+          'Ultraviolet (UV)',
+          'X-Rays',
+          'Gamma Rays'
+        ];
+        const ok = state.act2Order.every((w, i) => w === correct[i]);
+        state.act2CheckResult = ok
+          ? { ok: true, msg: 'Spot on! All 7 electromagnetic waves are ordered from longest wavelength (Radio) to shortest wavelength (Gamma Rays).' }
+          : { ok: false, msg: 'Not quite yet. Remember: Radio waves have the longest wavelengths, while Gamma rays have the shortest. Adjust the cards and retry!' };
+        render();
+      },
+      resetAct2Order() {
+        state.act2Order = [
+          'Gamma Rays',
+          'Infrared (IR)',
+          'Radio Waves',
+          'X-Rays',
+          'Visible Light',
+          'Microwaves',
+          'Ultraviolet (UV)'
+        ];
+        state.act2CheckResult = null;
+        render();
+      },
+      updateAct2Brief(field, value) {
+        state.act2Brief[field] = value;
+      },
+      updateAct3Response(scId, field, value) {
+        state.act3Responses[scId][field] = value;
+      },
+      async saveActivity(activityId, status) {
+        const mine = getMyClasses();
+        const activeClass = mine.find((c) => c.id === state.selectedClassId);
+        if (!state.userProfile || !activeClass) {
+          showToast('Please join a class before saving or submitting activities.', 'error');
+          return;
+        }
+        const titleMap = {
+          activity1: state.curriculum.activities.activity1.title,
+          activity2: state.curriculum.activities.activity2.title,
+          activity3: state.curriculum.activities.activity3.title
+        };
+        const dataMap = {
+          activity1: { rows: state.act1Rows, answers: state.act1Answers },
+          activity2: { order: state.act2Order, brief: state.act2Brief },
+          activity3: { responses: state.act3Responses }
+        };
+        const subId = `sub_${activeClass.id}_${state.userProfile.id}_${activityId}`;
+        const existing = state.submissions.find((s) => s.id === subId);
+
+        const record = {
+          id: subId,
+          classId: activeClass.id,
+          className: activeClass.name,
+          studentId: state.userProfile.id,
+          studentName: state.userProfile.name,
+          activityId,
+          activityTitle: titleMap[activityId],
+          data: dataMap[activityId],
+          status,
+          grade: existing?.grade || '',
+          feedback: existing?.feedback || '',
+          updatedAt: Date.now(),
+          submittedAt: status === 'Submitted' ? Date.now() : existing?.submittedAt || null
+        };
+        if (db && state.firebaseUser) {
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'submissions', subId), record);
+        }
+        showToast(status === 'Submitted' ? `${titleMap[activityId]} submitted!` : 'Draft saved to cloud.');
+      },
+      setAssessmentTab(tab) {
+        state.activeAssessmentTab = tab;
+        state.currentQuizIdx = 0;
+        render();
+      },
+      setQuizIdx(idx) {
+        state.currentQuizIdx = idx;
+        render();
+      },
+      selectQuizOption(qId, optIdx) {
+        state.quizAnswers[qId] = optIdx;
+        render();
+      },
+      async submitAssessment(type) {
+        const mine = getMyClasses();
+        const activeClass = mine.find((c) => c.id === state.selectedClassId);
+        if (!state.userProfile || !activeClass) {
+          showToast('Please join a class before submitting assessments.', 'error');
+          return;
+        }
+        const quiz = state.curriculum.assessments[type];
+        let correctCount = 0;
+        const detailedAnswers = quiz.questions.map((q) => {
+          const chosen = state.quizAnswers[q.id];
+          const isRight = chosen === q.correctIndex;
+          if (isRight) correctCount++;
+          return {
+            questionId: q.id,
+            question: q.question,
+            chosenIndex: chosen ?? -1,
+            chosenText: chosen !== undefined ? q.options[chosen] : 'No answer selected',
+            correctIndex: q.correctIndex,
+            correctText: q.options[q.correctIndex],
+            isCorrect: isRight,
+            explanation: q.explanation
+          };
+        });
+        const percentage = Math.round((correctCount / quiz.questions.length) * 100);
+        const resId = `ass_${activeClass.id}_${state.userProfile.id}_${type}`;
+        const record = {
+          id: resId,
+          classId: activeClass.id,
+          className: activeClass.name,
+          studentId: state.userProfile.id,
+          studentName: state.userProfile.name,
+          type,
+          title: quiz.title,
+          score: correctCount,
+          total: quiz.questions.length,
+          percentage,
+          answers: detailedAnswers,
+          submittedAt: Date.now()
+        };
+        if (db && state.firebaseUser) {
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'assessments', resId), record);
+        }
+        showToast(`Assessment submitted! Score: ${correctCount}/${quiz.questions.length} (${percentage}%)`);
+      },
+      async retakeAssessment(resId) {
+        if (!db || !state.firebaseUser) return;
+        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'assessments', resId));
+        state.quizAnswers = {};
+        state.currentQuizIdx = 0;
+        render();
+      },
+      openStudentProgress(enrollmentId) {
+        state.selectedStudentProgress = state.enrollments.find((e) => e.id === enrollmentId) || null;
+        render();
+      },
+      closeStudentProgress() {
+        state.selectedStudentProgress = null;
+        render();
+      },
+      setSubmissionFilter(filter) {
+        state.submissionFilter = filter;
+        render();
+      },
+      openReviewSubmission(subId) {
+        state.selectedStudentProgress = null;
+        state.reviewingSubmission = state.submissions.find((s) => s.id === subId) || null;
+        render();
+      },
+      closeReviewSubmission() {
+        state.reviewingSubmission = null;
+        render();
+      },
+      async saveGradeReview(e) {
+        e.preventDefault();
+        if (!state.reviewingSubmission || !db || !state.firebaseUser) return;
+        const form = e.target;
+        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'submissions', state.reviewingSubmission.id), {
+          grade: form.grade.value.trim(),
+          feedback: form.feedback.value.trim(),
+          status: form.status.value,
+          gradedAt: Date.now()
+        });
+        state.reviewingSubmission = null;
+        showToast('Grade and feedback saved.');
+      },
+      selectEditorLesson(id) {
+        state.editorLessonId = id;
+        const found = state.curriculum.lessons.find((l) => l.id === id);
+        state.editorDraft = found ? { ...found } : null;
+        state.editorPreview = false;
+        render();
+      },
+      updateEditorField(field, value) {
+        if (!state.editorDraft) {
+          const found = state.curriculum.lessons.find((l) => l.id === state.editorLessonId);
+          state.editorDraft = found ? { ...found } : null;
+        }
+        if (state.editorDraft) state.editorDraft[field] = value;
+      },
+      toggleEditorPreview() {
+        if (!state.editorDraft) {
+          const found = state.curriculum.lessons.find((l) => l.id === state.editorLessonId);
+          state.editorDraft = found ? { ...found } : null;
+        }
+        state.editorPreview = !state.editorPreview;
+        render();
+      },
+      async saveCurriculumEdit() {
+        if (!state.editorDraft || !db || !state.firebaseUser) return;
+        const updatedLessons = state.curriculum.lessons.map((l) =>
+          l.id === state.editorDraft.id ? state.editorDraft : l
+        );
+        await setDoc(
+          doc(db, 'artifacts', appId, 'public', 'data', 'curriculum', 'master'),
+          { lessons: updatedLessons },
+          { merge: true }
+        );
+        state.editorDraft = null;
+        state.editorPreview = false;
+        showToast('Lesson content updated across all classrooms!');
+      },
+      toggleCosmo(open) {
+        state.cosmoOpen = open !== undefined ? open : !state.cosmoOpen;
+        render();
+      },
+      setCosmoMode(mode) {
+        state.cosmoMode = mode;
+        render();
+      },
+      async sendCosmo(e, presetPrompt = null) {
+        if (e) e.preventDefault();
+        const inputEl = document.getElementById('cosmo-input');
+        const text = (presetPrompt || inputEl?.value || '').trim();
+        if (!text || state.cosmoLoading) return;
+
+        state.cosmoMessages.push({ sender: 'user', text });
+        if (inputEl) inputEl.value = '';
+        state.cosmoLoading = true;
+        render();
+
+        if (db && state.firebaseUser && state.userProfile) {
+          try {
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', state.userProfile.id), {
+              aiQueriesCount: (state.userProfile.aiQueriesCount || 0) + 1
+            });
+          } catch {}
+        }
+
+        const reply = await askCosmoAI(text);
+        state.cosmoMessages.push({ sender: 'cosmo', text: reply });
+        state.cosmoLoading = false;
+        render();
+      }
+    };
+
+    // ========================================================================
+    // 7. LIVE ANIMATED WAVE LOOP FOR INTERACTIVE SPECTRUM
+    // ========================================================================
+    let wavePhase = 0;
+    function animateSpectrumWave() {
+      wavePhase = (wavePhase + 0.08) % (Math.PI * 20);
+      const pathEl = document.getElementById('em-live-wave-path');
+      if (pathEl) {
+        const wave = state.curriculum.emWaves.find((w) => w.id === state.selectedWaveId) || state.curriculum.emWaves[0];
+        const freq = wave.waveFreqVisual || 4;
+        let d = 'M 0 55';
+        for (let x = 0; x <= 640; x += 6) {
+          const y = 55 + Math.sin((x / 640) * Math.PI * 2 * freq - wavePhase) * 34;
+          d += ` L ${x} ${y.toFixed(1)}`;
+        }
+        pathEl.setAttribute('d', d);
+        pathEl.setAttribute('stroke', wave.color);
+      }
+      requestAnimationFrame(animateSpectrumWave);
+    }
+    window.addEventListener('load', () => {
+      requestAnimationFrame(animateSpectrumWave);
+    });
+
+    // ========================================================================
+    // 8. VIEW RENDERERS
+    // ========================================================================
+    function renderAuthGateway() {
+      return `
+        <div class="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-950 via-slate-950 to-black text-slate-100 flex flex-col justify-between p-4 sm:p-8 relative overflow-x-hidden">
+          <header class="max-w-6xl w-full mx-auto flex items-center justify-between py-2">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                <i data-lucide="rocket" class="w-5 h-5 text-white"></i>
+              </div>
+              <div>
+                <span class="font-extrabold tracking-wider text-white text-lg">ASTROKIT</span>
+                <span class="block text-[11px] uppercase tracking-widest text-cyan-400">Beyond the Visible</span>
+              </div>
+            </div>
+            <span class="text-xs px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300">Grade 9 Science LMS</span>
+          </header>
+
+          <main class="max-w-5xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-8">
+            <div class="lg:col-span-7 space-y-5">
+              <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Interactive Space Radiation & EM Spectrum Classroom
+              </div>
+              <h1 class="text-3xl sm:text-5xl font-extrabold text-white leading-tight">
+                ASTROKIT: <span class="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">Beyond the Visible</span>
+              </h1>
+              <p class="text-slate-300 text-base sm:text-lg leading-relaxed">
+                Explore space radiation, blackbody spectra, and the seven electromagnetic wave bands inside a unified digital classroom built for Grade 9 Science students and educators.
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                <div class="glass-card rounded-xl p-3.5">
+                  <i data-lucide="telescope" class="w-5 h-5 text-cyan-400 mb-1.5"></i>
+                  <div class="font-semibold text-sm text-white">PhET & EM Labs</div>
+                  <div class="text-xs text-slate-400 mt-0.5">Interactive simulations & spectrum challenges</div>
+                </div>
+                <div class="glass-card rounded-xl p-3.5">
+                  <i data-lucide="users" class="w-5 h-5 text-purple-400 mb-1.5"></i>
+                  <div class="font-semibold text-sm text-white">Live Classrooms</div>
+                  <div class="text-xs text-slate-400 mt-0.5">Class codes, submissions & real-time grading</div>
+                </div>
+                <div class="glass-card rounded-xl p-3.5">
+                  <i data-lucide="bot" class="w-5 h-5 text-pink-400 mb-1.5"></i>
+                  <div class="font-semibold text-sm text-white">Cosmo AI Guide</div>
+                  <div class="text-xs text-slate-400 mt-0.5">Socratic Grade 9 science guidance</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="lg:col-span-5 glass-card rounded-2xl p-6 sm:p-8 shadow-2xl">
+              <div class="flex rounded-xl bg-slate-950 p-1 border border-white/10 mb-6">
+                <button type="button" onclick="astroActions.setAuthMode('login')" class="flex-1 py-2 text-sm font-semibold rounded-lg transition ${state.authMode === 'login' ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
+                  Sign In
+                </button>
+                <button type="button" onclick="astroActions.setAuthMode('register')" class="flex-1 py-2 text-sm font-semibold rounded-lg transition ${state.authMode === 'register' ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}">
+                  Create Account
+                </button>
+              </div>
+
+              <form onsubmit="astroActions.submitAuth(event)" class="space-y-4">
+                ${state.authMode === 'register' ? `
+                  <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Select Your Role</label>
+                    <div class="grid grid-cols-2 gap-3">
+                      <button type="button" onclick="astroActions.setAuthRole('student')" class="p-3 rounded-xl border text-left transition ${state.authRole === 'student' ? 'border-cyan-400 bg-cyan-500/15 text-white' : 'border-white/10 bg-slate-950/60 text-slate-400'}">
+                        <div class="font-bold text-sm">Student</div>
+                        <div class="text-[11px] opacity-80">Join classes & complete missions</div>
+                      </button>
+                      <button type="button" onclick="astroActions.setAuthRole('teacher')" class="p-3 rounded-xl border text-left transition ${state.authRole === 'teacher' ? 'border-purple-400 bg-purple-500/15 text-white' : 'border-white/10 bg-slate-950/60 text-slate-400'}">
+                        <div class="font-bold text-sm">Teacher</div>
+                        <div class="text-[11px] opacity-80">Create classes & grade work</div>
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Full Name</label>
+                    <input type="text" name="fullName" required placeholder="e.g., Alex Rivera" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-white/15 text-white text-sm focus:outline-none focus:border-cyan-400" />
+                  </div>
+                ` : ''}
+
+                <div>
+                  <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">School or Personal Email</label>
+                  <input type="email" name="email" required placeholder="explorer@school.edu" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-white/15 text-white text-sm focus:outline-none focus:border-cyan-400" />
+                </div>
+
+                ${state.authError ? `
+                  <div class="p-3 rounded-xl bg-red-500/15 border border-red-500/40 text-red-200 text-xs flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
+                    <span>${escapeHtml(state.authError)}</span>
+                  </div>
+                ` : ''}
+
+                <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 transition">
+                  ${state.authMode === 'login' ? 'Launch Mission Control' : 'Register & Enter ASTROKIT'}
+                </button>
+              </form>
+            </div>
+          </main>
+
+          <footer class="text-center text-xs text-slate-500 py-2">
+            ASTROKIT: Beyond the Visible • Grade 9 Science Digital Learning Environment • Google Sites Embed Ready
+          </footer>
+        </div>
+      `;
+    }
+
+    function renderInteractiveSpectrum() {
+      const waves = state.curriculum.emWaves;
+      const sel = waves.find((w) => w.id === state.selectedWaveId) || waves[3];
+      const textCls = state.readingMode ? 'text-base leading-relaxed' : 'text-sm';
+
+      return `
+        <div class="space-y-6">
+          <div>
+            <span class="text-xs uppercase tracking-widest text-cyan-400 font-bold">Interactive Exploration Lab</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">The Electromagnetic Spectrum</h2>
+            <p class="text-sm text-slate-300 mt-1">Select any of the seven electromagnetic wave regions to inspect its animated waveform, wavelength, frequency, energy, and astronomical observatories.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            <div class="bg-slate-900/80 border border-cyan-500/20 rounded-xl p-3 flex items-center justify-between">
+              <span class="text-slate-400">Wavelength (λ)</span>
+              <span class="font-semibold text-cyan-300">Longest (Left) → Shortest (Right)</span>
+            </div>
+            <div class="bg-slate-900/80 border border-purple-500/20 rounded-xl p-3 flex items-center justify-between">
+              <span class="text-slate-400">Frequency (f)</span>
+              <span class="font-semibold text-purple-300">Lowest (Left) → Highest (Right)</span>
+            </div>
+            <div class="bg-slate-900/80 border border-pink-500/20 rounded-xl p-3 flex items-center justify-between">
+              <span class="text-slate-400">Photon Energy (E)</span>
+              <span class="font-semibold text-pink-300">Lowest (Left) → Highest (Right)</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
+            ${waves.map((w) => {
+              const active = w.id === sel.id;
+              return `
+                <button onclick="astroActions.selectWave('${w.id}')" class="rounded-xl p-3 text-left transition-all border ${active ? 'border-cyan-400 bg-slate-800/95 shadow-lg shadow-cyan-500/20 scale-[1.02]' : 'border-white/10 bg-slate-900/60 hover:border-white/30'}">
+                  <div class="h-1.5 w-full rounded-full bg-gradient-to-r ${w.gradient} mb-2.5"></div>
+                  <div class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Band 0${w.order}</div>
+                  <div class="font-bold text-sm text-white mt-0.5 leading-snug">${escapeHtml(w.name)}</div>
+                  <div class="text-[11px] text-slate-400 mt-1 truncate">${escapeHtml(w.wavelength)}</div>
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          <div class="bg-slate-950/90 border border-white/10 rounded-2xl p-4 sm:p-6">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <div>
+                <span class="text-xs uppercase tracking-widest text-cyan-400 font-semibold">Live Wave Propagation Simulation</span>
+                <h4 class="text-lg font-bold text-white">${escapeHtml(sel.name)} Waveform</h4>
+              </div>
+              <div class="flex gap-3 text-xs">
+                <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300">λ: <strong class="text-cyan-300">${escapeHtml(sel.wavelength)}</strong></span>
+                <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300">f: <strong class="text-purple-300">${escapeHtml(sel.frequency)}</strong></span>
+              </div>
+            </div>
+
+            <div class="relative w-full h-28 bg-slate-900/70 rounded-xl border border-white/5 overflow-hidden flex items-center justify-center">
+              <svg viewBox="0 0 640 110" class="w-full h-full" aria-label="Animated sine wave">
+                <line x1="0" y1="55" x2="640" y2="55" stroke="rgba(255,255,255,0.12)" stroke-dasharray="4 4" />
+                <path id="em-live-wave-path" d="M 0 55 L 640 55" fill="none" stroke="${sel.color}" stroke-width="3.5" stroke-linecap="round" />
+              </svg>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
+              <div class="bg-white/5 rounded-xl p-3.5 border border-white/10">
+                <div class="text-xs text-slate-400 uppercase font-semibold">Wavelength & Frequency</div>
+                <div class="text-sm text-white font-medium mt-1">${escapeHtml(sel.wavelength)}</div>
+                <div class="text-xs text-cyan-300 mt-0.5">${escapeHtml(sel.frequency)}</div>
+              </div>
+              <div class="bg-white/5 rounded-xl p-3.5 border border-white/10">
+                <div class="text-xs text-slate-400 uppercase font-semibold">Photon Energy Level</div>
+                <div class="text-sm text-pink-300 font-semibold mt-1">${escapeHtml(sel.energy)}</div>
+              </div>
+              <div class="bg-white/5 rounded-xl p-3.5 border border-white/10 md:col-span-2">
+                <div class="text-xs text-slate-400 uppercase font-semibold">Key Physical Characteristics</div>
+                <p class="text-slate-200 mt-1 ${textCls}">${escapeHtml(sel.characteristics)}</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              <div class="bg-slate-900/80 rounded-xl p-4 border border-white/10">
+                <h5 class="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-1.5">Everyday Applications</h5>
+                <p class="text-slate-300 ${textCls}">${escapeHtml(sel.everydayApps)}</p>
+              </div>
+              <div class="bg-slate-900/80 rounded-xl p-4 border border-white/10">
+                <h5 class="text-xs font-bold uppercase tracking-wider text-purple-400 mb-1.5">Astronomical Applications</h5>
+                <p class="text-slate-300 ${textCls}">${escapeHtml(sel.astroApps)}</p>
+              </div>
+              <div class="bg-slate-900/80 rounded-xl p-4 border border-white/10">
+                <h5 class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-1.5">Celestial Objects & Fun Fact</h5>
+                <p class="text-slate-300 ${textCls}"><strong class="text-white">Sources:</strong> ${escapeHtml(sel.celestialObjects)}</p>
+                <p class="text-xs text-amber-200/90 mt-2 italic">“${escapeHtml(sel.fact)}”</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMainApp() {
+      const isTeacher = state.userProfile.role === 'teacher';
+      const myClasses = getMyClasses();
+      const activeClass = myClasses.find((c) => c.id === state.selectedClassId) || null;
+
+      const navItems = isTeacher
+        ? [
+            { id: 'dashboard', label: 'Mission Control', icon: 'compass' },
+            { id: 'classes', label: 'Classrooms & Roster', icon: 'users' },
+            { id: 'submissions', label: 'Student Submissions', icon: 'clipboard-list' },
+            { id: 'lessons', label: 'Lesson Modules', icon: 'book-open' },
+            { id: 'spectrum', label: 'EM Spectrum Lab', icon: 'radio' },
+            { id: 'editor', label: 'Content Editor', icon: 'edit-3' }
+          ]
+        : [
+            { id: 'dashboard', label: 'My Space Mission', icon: 'rocket' },
+            { id: 'lessons', label: 'Lesson Modules', icon: 'book-open' },
+            { id: 'spectrum', label: 'Interactive Spectrum', icon: 'radio' },
+            { id: 'activities', label: 'Space Activities', icon: 'telescope' },
+            { id: 'assessments', label: 'Assessments', icon: 'award' }
+          ];
+
+      let bodyHtml = '';
+
+      // ----------------------------------------------------------------------
+      // TEACHER DASHBOARD: MISSION CONTROL
+      // ----------------------------------------------------------------------
+      if (state.activeTab === 'dashboard' && isTeacher) {
+        const ownedIds = myClasses.map((c) => c.id);
+        const classEnrs = state.enrollments.filter((e) => ownedIds.includes(e.classId));
+        const uniqueStudents = new Set(classEnrs.map((e) => e.studentId)).size;
+        const classSubs = state.submissions.filter((s) => ownedIds.includes(s.classId));
+        const pendingSubs = classSubs.filter((s) => s.status === 'Submitted').length;
+        const classAss = state.assessmentsData.filter((a) => ownedIds.includes(a.classId));
+
+        bodyHtml = `
+          <div class="space-y-8">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+              <div class="glass-card rounded-2xl p-4 sm:p-5"><div class="text-xs text-slate-400">Total Classes</div><div class="text-2xl sm:text-3xl font-extrabold mt-1.5 text-cyan-400">${myClasses.length}</div></div>
+              <div class="glass-card rounded-2xl p-4 sm:p-5"><div class="text-xs text-slate-400">Total Students</div><div class="text-2xl sm:text-3xl font-extrabold mt-1.5 text-blue-400">${uniqueStudents}</div></div>
+              <div class="glass-card rounded-2xl p-4 sm:p-5"><div class="text-xs text-slate-400">Active Activities</div><div class="text-2xl sm:text-3xl font-extrabold mt-1.5 text-purple-400">3</div></div>
+              <div class="glass-card rounded-2xl p-4 sm:p-5"><div class="text-xs text-slate-400">Pending Submissions</div><div class="text-2xl sm:text-3xl font-extrabold mt-1.5 text-amber-400">${pendingSubs}</div></div>
+              <div class="glass-card rounded-2xl p-4 sm:p-5"><div class="text-xs text-slate-400">Completed Assessments</div><div class="text-2xl sm:text-3xl font-extrabold mt-1.5 text-emerald-400">${classAss.length}</div></div>
+            </div>
+
+            ${myClasses.length === 0 ? `
+              <div class="glass-card border-dashed border-cyan-500/40 rounded-2xl p-10 text-center space-y-4">
+                <i data-lucide="rocket" class="w-12 h-12 text-cyan-400 mx-auto"></i>
+                <h2 class="text-xl font-bold text-white">Launch Your First ASTROKIT Class</h2>
+                <p class="text-sm text-slate-400 max-w-md mx-auto">Create a Grade 9 Science class to generate a unique class code, invite students, post announcements, and track submissions.</p>
+                <button onclick="astroActions.openCreateClassModal(true)" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm">
+                  <i data-lucide="plus" class="w-4 h-4"></i> Create Class Now
+                </button>
+              </div>
+            ` : activeClass ? `
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-7 bg-gradient-to-br from-slate-900 via-indigo-950/60 to-slate-900 border border-white/15 rounded-2xl p-6 space-y-4">
+                  <div class="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                      <span class="text-xs uppercase tracking-widest text-cyan-400 font-bold">${escapeHtml(activeClass.gradeLevel)} • ${escapeHtml(activeClass.section)}</span>
+                      <h2 class="text-2xl font-extrabold text-white mt-1">${escapeHtml(activeClass.name)}</h2>
+                      <p class="text-sm text-slate-300 mt-1">${escapeHtml(activeClass.subject)}</p>
+                    </div>
+                    <div class="bg-slate-950/90 border border-cyan-500/40 rounded-xl p-3 text-right">
+                      <div class="text-[10px] uppercase tracking-widest text-slate-400">Class Join Code</div>
+                      <div class="text-lg font-mono font-extrabold text-cyan-300 tracking-wider">${escapeHtml(activeClass.code)}</div>
+                      <div class="flex items-center justify-end gap-2 mt-1.5">
+                        <button onclick="astroActions.copyText('${activeClass.code}', 'Copied code: ${activeClass.code}')" class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded bg-white/10 hover:bg-white/20 text-white">Copy</button>
+                        <button onclick="astroActions.copyText('Join ${escapeHtml(activeClass.name)} on ASTROKIT using Class Code: ${activeClass.code}', 'Invitation copied!')" class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-200">Share</button>
+                      </div>
+                    </div>
+                  </div>
+                  ${activeClass.description ? `<p class="text-xs text-slate-400 bg-white/5 p-3 rounded-xl">${escapeHtml(activeClass.description)}</p>` : ''}
+                  <div class="flex flex-wrap gap-2 pt-2">
+                    <button onclick="astroActions.openEditClass('${activeClass.id}')" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-xs font-semibold text-white">Edit Class Settings</button>
+                    <button onclick="astroActions.setTab('classes')" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-xs font-semibold text-white">Manage Roster</button>
+                    <button onclick="astroActions.setTab('submissions')" class="px-3 py-1.5 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 border border-purple-400/30 text-xs font-semibold text-purple-200">Review Submissions (${pendingSubs} Pending)</button>
+                  </div>
+                </div>
+
+                <div class="lg:col-span-5 glass-card rounded-2xl p-6 space-y-4">
+                  <h3 class="text-sm font-bold uppercase tracking-wider text-cyan-400">Class Stream & Announcements</h3>
+                  <form onsubmit="astroActions.postAnnouncement(event)" class="flex gap-2">
+                    <input type="text" name="announcementText" placeholder="Post instructions, deadlines, or updates..." class="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-white/15 text-xs text-white focus:outline-none focus:border-cyan-400" />
+                    <button type="submit" class="px-3.5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs">Post</button>
+                  </form>
+                  <div class="space-y-2.5 max-h-48 overflow-y-auto pr-1">
+                    ${state.announcements.filter((a) => a.classId === activeClass.id).length === 0
+                      ? '<p class="text-xs text-slate-500 italic">No announcements posted yet.</p>'
+                      : state.announcements.filter((a) => a.classId === activeClass.id).map((ann) => `
+                        <div class="p-3 rounded-xl bg-white/5 border border-white/10 text-xs space-y-1">
+                          <div class="flex justify-between text-[11px] text-slate-400">
+                            <span class="font-semibold text-cyan-300">${escapeHtml(ann.authorName)}</span>
+                            <span>${formatDate(ann.createdAt)}</span>
+                          </div>
+                          <p class="text-slate-200">${escapeHtml(ann.content)}</p>
+                        </div>
+                      `).join('')}
+                  </div>
+                </div>
+              </div>
+
+              <div class="glass-card rounded-2xl p-6 space-y-4">
+                <div>
+                  <h3 class="text-lg font-bold text-white">Student Roster & Performance</h3>
+                  <p class="text-xs text-slate-400">Click any student’s name to inspect detailed mission progress, pre/post assessment gains, and activity outputs.</p>
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                      <tr class="border-b border-white/10 text-xs uppercase text-slate-400">
+                        <th class="py-3 px-4">Student</th>
+                        <th class="py-3 px-4">Status</th>
+                        <th class="py-3 px-4">Activities Completed</th>
+                        <th class="py-3 px-4">Pre / Post Quiz</th>
+                        <th class="py-3 px-4">Submission</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5">
+                      ${state.enrollments.filter((e) => e.classId === activeClass.id).length === 0
+                        ? `<tr><td colspan="5" class="py-8 text-center text-xs text-slate-500">No students enrolled yet. Share code <span class="text-cyan-400 font-mono font-bold">${escapeHtml(activeClass.code)}</span> with your class.</td></tr>`
+                        : state.enrollments.filter((e) => e.classId === activeClass.id).map((enr) => {
+                            const stuSubs = state.submissions.filter((s) => s.classId === activeClass.id && s.studentId === enr.studentId);
+                            const completedActs = stuSubs.filter((s) => s.status === 'Submitted' || s.status === 'Graded').length;
+                            const preRes = state.assessmentsData.find((a) => a.classId === activeClass.id && a.studentId === enr.studentId && a.type === 'pre');
+                            const postRes = state.assessmentsData.find((a) => a.classId === activeClass.id && a.studentId === enr.studentId && a.type === 'post');
+                            return `
+                              <tr class="hover:bg-white/5 transition">
+                                <td class="py-3.5 px-4">
+                                  <button onclick="astroActions.openStudentProgress('${enr.id}')" class="font-bold text-cyan-300 hover:underline text-left">${escapeHtml(enr.studentName)}</button>
+                                  <div class="text-[11px] text-slate-500">${escapeHtml(enr.studentEmail)}</div>
+                                </td>
+                                <td class="py-3.5 px-4"><span class="px-2.5 py-0.5 rounded-full text-xs bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">${escapeHtml(enr.status)}</span></td>
+                                <td class="py-3.5 px-4 font-semibold text-white">${completedActs} / 3</td>
+                                <td class="py-3.5 px-4 text-xs">
+                                  <span class="text-slate-300">Pre: ${preRes ? preRes.percentage + '%' : '—'}</span>
+                                  <span class="mx-1.5 text-slate-600">|</span>
+                                  <span class="text-purple-300 font-semibold">Post: ${postRes ? postRes.percentage + '%' : '—'}</span>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                  <button onclick="astroActions.openStudentProgress('${enr.id}')" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-cyan-500/20 text-xs font-semibold text-white">View</button>
+                                </td>
+                              </tr>
+                            `;
+                          }).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      // ----------------------------------------------------------------------
+      // STUDENT DASHBOARD: MY SPACE MISSION
+      // ----------------------------------------------------------------------
+      if (state.activeTab === 'dashboard' && !isTeacher) {
+        const classSubs = state.submissions.filter((s) => s.studentId === state.userProfile.id && (!state.selectedClassId || s.classId === state.selectedClassId));
+        const classAss = state.assessmentsData.filter((a) => a.studentId === state.userProfile.id && (!state.selectedClassId || a.classId === state.selectedClassId));
+
+        const milestones = [
+          { id: 'pre', label: 'Diagnostic — Pre-Assessment (What I Know?)', done: classAss.some((a) => a.type === 'pre') },
+          { id: 'm1', label: 'Mission 1 — Discover Space Radiation (Blackbody Lab)', done: classSubs.some((s) => s.activityId === 'activity1' && (s.status === 'Submitted' || s.status === 'Graded')) },
+          { id: 'm2', label: 'Mission 2 — Decode the Electromagnetic Spectrum', done: classSubs.some((s) => s.activityId === 'activity2' && (s.status === 'Submitted' || s.status === 'Graded')) },
+          { id: 'm3', label: 'Mission 3 — Spectrum Seekers Challenge', done: classSubs.some((s) => s.activityId === 'activity3' && (s.status === 'Submitted' || s.status === 'Graded')) },
+          { id: 'post', label: 'Final Mission — Post-Assessment (What I Have Learned?)', done: classAss.some((a) => a.type === 'post') }
+        ];
+        const completedCount = milestones.filter((m) => m.done).length;
+        const percent = Math.round((completedCount / milestones.length) * 100);
+
+        bodyHtml = `
+          <div class="space-y-8">
+            <div class="bg-gradient-to-r from-slate-900 via-indigo-950/70 to-slate-900 border border-cyan-500/30 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-lg font-bold text-white">Join a Science Classroom</h2>
+                <p class="text-xs text-slate-300 mt-0.5">Enter the unique class code provided by your teacher (e.g., ASTRO-9K7P2).</p>
+              </div>
+              <form onsubmit="astroActions.joinClass(event)" class="flex w-full md:w-auto gap-2">
+                <input type="text" name="joinCode" placeholder="ASTRO-XXXXX" class="flex-1 md:w-48 px-3.5 py-2.5 rounded-xl bg-slate-950 border border-white/15 text-sm font-mono uppercase text-white focus:outline-none focus:border-cyan-400" />
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm">Join Class</button>
+              </form>
+            </div>
+
+            ${myClasses.length > 0 ? `
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                ${myClasses.map((cls) => `
+                  <div onclick="astroActions.selectClass('${cls.id}')" class="cursor-pointer rounded-2xl p-5 border transition ${state.selectedClassId === cls.id ? 'bg-slate-900/90 border-cyan-400 shadow-lg shadow-cyan-500/10' : 'bg-slate-900/50 border-white/10 hover:border-white/25'}">
+                    <div class="flex items-center justify-between text-xs text-cyan-400 font-semibold">
+                      <span>${escapeHtml(cls.gradeLevel)}</span>
+                      <span class="font-mono">${escapeHtml(cls.code)}</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mt-1">${escapeHtml(cls.name)}</h3>
+                    <p class="text-xs text-slate-400 mt-1">Instructor: ${escapeHtml(cls.teacherName)}</p>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div class="lg:col-span-7 glass-card rounded-2xl p-6 space-y-5">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="text-xs uppercase tracking-widest text-cyan-400 font-bold">Learning Trajectory</span>
+                    <h3 class="text-xl font-extrabold text-white">MISSION PROGRESS</h3>
+                  </div>
+                  <div class="text-right">
+                    <span class="text-2xl font-extrabold text-cyan-300">${percent}%</span>
+                    <span class="block text-[11px] text-slate-400">Completed</span>
+                  </div>
+                </div>
+                <div class="w-full h-3 rounded-full bg-slate-950 overflow-hidden border border-white/10">
+                  <div class="h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 transition-all duration-500" style="width: ${percent}%"></div>
+                </div>
+                <div class="space-y-2.5">
+                  ${milestones.map((m) => `
+                    <div class="flex items-center justify-between p-3.5 rounded-xl border ${m.done ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-100' : 'bg-slate-950/60 border-white/10 text-slate-300'}">
+                      <div class="flex items-center gap-3">
+                        <i data-lucide="${m.done ? 'check-circle-2' : 'circle'}" class="w-5 h-5 ${m.done ? 'text-emerald-400' : 'text-slate-500'} shrink-0"></i>
+                        <span class="text-sm font-medium">${escapeHtml(m.label)}</span>
+                      </div>
+                      <button onclick="${m.id === 'pre' || m.id === 'post' ? `astroActions.setAssessmentTab('${m.id}'); astroActions.setTab('assessments');` : `astroActions.setActivityTab('${m.id === 'm1' ? 'activity1' : m.id === 'm2' ? 'activity2' : 'activity3'}'); astroActions.setTab('activities');`}" class="text-xs font-semibold text-cyan-400 hover:underline shrink-0 ml-2">
+                        ${m.done ? 'Review' : 'Start →'}
+                      </button>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <div class="lg:col-span-5 space-y-6">
+                <div class="glass-card rounded-2xl p-5 space-y-3">
+                  <h3 class="text-sm font-bold uppercase tracking-wider text-cyan-400">Class Announcements</h3>
+                  ${!activeClass ? '<p class="text-xs text-slate-400">Join a class with your class code to view teacher announcements.</p>'
+                    : state.announcements.filter((a) => a.classId === activeClass.id).length === 0 ? '<p class="text-xs text-slate-500 italic">No announcements yet.</p>'
+                    : state.announcements.filter((a) => a.classId === activeClass.id).map((ann) => `
+                      <div class="p-3 rounded-xl bg-white/5 border border-white/10 text-xs space-y-1">
+                        <div class="flex justify-between text-[11px] text-slate-400">
+                          <span class="font-bold text-cyan-300">${escapeHtml(ann.authorName)}</span>
+                          <span>${formatDate(ann.createdAt)}</span>
+                        </div>
+                        <p class="text-slate-200">${escapeHtml(ann.content)}</p>
+                      </div>
+                    `).join('')}
+                </div>
+
+                <div class="glass-card rounded-2xl p-5 space-y-3">
+                  <h3 class="text-sm font-bold uppercase tracking-wider text-purple-400">Scores & Teacher Feedback</h3>
+                  ${classSubs.length === 0 && classAss.length === 0
+                    ? '<p class="text-xs text-slate-500">Your assessment scores and graded activity feedback will appear here once submitted.</p>'
+                    : `
+                      <div class="space-y-2.5 max-h-56 overflow-y-auto">
+                        ${classAss.map((ass) => `
+                          <div class="p-3 rounded-xl bg-purple-500/10 border border-purple-400/25 text-xs flex items-center justify-between">
+                            <span class="font-semibold text-white">${escapeHtml(ass.title)}</span>
+                            <span class="font-bold text-purple-300">${ass.score}/${ass.total} (${ass.percentage}%)</span>
+                          </div>
+                        `).join('')}
+                        ${classSubs.map((sub) => `
+                          <div class="p-3 rounded-xl bg-white/5 border border-white/10 text-xs space-y-1">
+                            <div class="flex justify-between">
+                              <span class="font-bold text-white">${escapeHtml(sub.activityTitle)}</span>
+                              <span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-200 text-[11px]">${escapeHtml(sub.status)} ${sub.grade ? '• ' + escapeHtml(sub.grade) : ''}</span>
+                            </div>
+                            ${sub.feedback ? `<p class="text-amber-200 bg-amber-500/10 p-2 rounded-lg mt-1"><strong>Teacher Feedback:</strong> ${escapeHtml(sub.feedback)}</p>` : ''}
+                          </div>
+                        `).join('')}
+                      </div>
+                    `}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // ----------------------------------------------------------------------
+      // TEACHER CLASSROOMS & ROSTER
+      // ----------------------------------------------------------------------
+      if (state.activeTab === 'classes' && isTeacher) {
+        bodyHtml = `
+          <div class="space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h2 class="text-2xl font-extrabold text-white">Your ASTROKIT Classrooms</h2>
+                <p class="text-xs text-slate-400">Manage class codes, settings, archived sections, and enrolled students.</p>
+              </div>
+              <button onclick="astroActions.openCreateClassModal(true)" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm">
+                <i data-lucide="plus" class="w-4 h-4"></i> New Class
+              </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              ${myClasses.map((cls) => {
+                const enrs = state.enrollments.filter((e) => e.classId === cls.id);
+                return `
+                  <div class="rounded-2xl p-6 border space-y-4 ${cls.archived ? 'bg-slate-900/40 border-white/5 opacity-70' : 'glass-card'}">
+                    <div class="flex items-start justify-between gap-3">
+                      <div>
+                        <span class="text-xs text-cyan-400 font-bold uppercase">${escapeHtml(cls.gradeLevel)} • ${escapeHtml(cls.section)}</span>
+                        <h3 class="text-xl font-bold text-white mt-0.5">${escapeHtml(cls.name)}</h3>
+                        <p class="text-xs text-slate-400">${escapeHtml(cls.subject)}</p>
+                      </div>
+                      <span class="px-3 py-1 rounded-lg bg-slate-950 border border-cyan-500/40 font-mono text-sm font-bold text-cyan-300">${escapeHtml(cls.code)}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs text-slate-300 pt-2 border-t border-white/10">
+                      <span>Enrolled Students: ${enrs.length}</span>
+                      <span>Status: ${cls.archived ? 'Archived' : 'Active'}</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                      <button onclick="astroActions.selectClass('${cls.id}'); astroActions.setTab('dashboard');" class="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-200 text-xs font-semibold">Open Class Dashboard</button>
+                      <button onclick="astroActions.openEditClass('${cls.id}')" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-white text-xs font-semibold">Settings</button>
+                      <button onclick="astroActions.toggleArchiveClass('${cls.id}')" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-semibold">${cls.archived ? 'Unarchive' : 'Archive'}</button>
+                    </div>
+                    ${enrs.length > 0 ? `
+                      <div class="pt-3 border-t border-white/10 space-y-2">
+                        <div class="text-[11px] uppercase tracking-wider text-slate-400 font-bold">Enrolled Students</div>
+                        ${enrs.map((enr) => `
+                          <div class="flex items-center justify-between text-xs bg-slate-950/70 px-3 py-2 rounded-lg">
+                            <span class="text-white font-medium">${escapeHtml(enr.studentName)}</span>
+                            <button onclick="astroActions.removeStudent('${enr.id}')" class="text-red-400 hover:underline text-[11px]">Remove</button>
+                          </div>
+                        `).join('')}
+                      </div>
+                    ` : ''}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // ----------------------------------------------------------------------
+      // LESSON MODULES
+      // ----------------------------------------------------------------------
+      if (state.activeTab === 'lessons') {
+        const lesson = state.curriculum.lessons.find((l) => l.id === state.selectedLessonId) || state.curriculum.lessons[0];
+        bodyHtml = `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-4 space-y-2.5">
+              <div class="px-2">
+                <h2 class="text-lg font-extrabold text-white">ASTROKIT Curriculum</h2>
+                <p class="text-xs text-slate-400">Complete Grade 9 Space Radiation & EM Spectrum Modules</p>
+              </div>
+              ${state.curriculum.lessons.map((l) => {
+                const active = l.id === lesson.id;
+                return `
+                  <button onclick="astroActions.selectLesson('${l.id}')" class="w-full text-left p-4 rounded-2xl border transition ${active ? 'bg-gradient-to-r from-cyan-600/25 to-purple-600/25 border-cyan-400 shadow-lg' : 'bg-slate-900/60 border-white/10 hover:border-white/25'}">
+                    <div class="flex items-center justify-between text-[11px] uppercase tracking-wider text-cyan-400 font-bold">
+                      <span>Module ${escapeHtml(l.number)}</span>
+                      <span>${escapeHtml(l.category)}</span>
+                    </div>
+                    <div class="font-bold text-sm text-white mt-1">${escapeHtml(l.title)}</div>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+
+            <div class="lg:col-span-8">
+              <article class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+                <div class="border-b border-white/10 pb-5">
+                  <span class="px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-bold">Module ${escapeHtml(lesson.number)} • ${escapeHtml(lesson.category)}</span>
+                  <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3">${escapeHtml(lesson.title)}</h2>
+                  <p class="text-sm text-slate-400 mt-1.5">${escapeHtml(lesson.summary)}</p>
+                </div>
+                <div class="space-y-4 text-slate-200 whitespace-pre-line ${state.readingMode ? 'text-lg leading-loose' : 'text-sm sm:text-base leading-relaxed'}">${escapeHtml(lesson.content)}</div>
+                ${lesson.keyTakeaways ? `
+                  <div class="bg-indigo-950/50 border border-indigo-400/30 rounded-2xl p-5 space-y-2.5">
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-cyan-300 flex items-center gap-2">Key Scientific Takeaways</h4>
+                    <ul class="space-y-2 text-sm text-slate-200 list-disc pl-5">
+                      ${lesson.keyTakeaways.map((pt) => `<li>${escapeHtml(pt)}</li>`).join('')}
+                    </ul>
+                  </div>
+                ` : ''}
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-white/10">
+                  <button onclick="astroActions.setCosmoMode('Explain This'); astroActions.toggleCosmo(true); astroActions.sendCosmo(null, 'Can you explain ${escapeHtml(lesson.title)} in simple Grade 9 terms?');" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600/25 border border-purple-400/40 text-purple-200 text-xs font-bold hover:bg-purple-600/35">
+                    Ask Cosmo to Explain This Module
+                  </button>
+                  <button onclick="astroActions.setTab('spectrum')" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold">
+                    Explore Interactive Spectrum →
+                  </button>
+                </div>
+              </article>
+            </div>
+          </div>
+        `;
+      }
+
+      // ----------------------------------------------------------------------
+      // INTERACTIVE EM SPECTRUM
+      // ----------------------------------------------------------------------
+      if (state.activeTab === 'spectrum') {
+        bodyHtml = renderInteractiveSpectrum();
+      }
+
+      // ----------------------------------------------------------------------
+      // ACTIVITIES & STUDENT SUBMISSION SYSTEM
+      // ----------------------------------------------------------------------
+      if (state.activeTab === 'activities') {
+        const currentSub = activeClass
+          ? state.submissions.find((s) => s.studentId === state.userProfile.id && s.classId === activeClass.id && s.activityId === state.activeActivityTab)
+          : null;
+        const status = currentSub?.status || 'Not Started';
+
+        let activityBody = '';
+        if (state.activeActivityTab === 'activity1') {
+          const act1 = state.curriculum.activities.activity1;
+          activityBody = `
+            <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+              <div>
+                <span class="text-xs uppercase tracking-widest text-cyan-400 font-bold">Simulation-Based Investigation</span>
+                <h2 class="text-2xl font-extrabold text-white mt-1">${escapeHtml(act1.title)}</h2>
+                <p class="text-sm text-slate-300 mt-2">${escapeHtml(act1.instructions)}</p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div class="bg-slate-950/70 border border-white/10 rounded-xl p-4 space-y-1.5">
+                  <div class="font-bold uppercase text-cyan-400">Learning Objectives</div>
+                  <ul class="list-disc pl-4 space-y-1 text-slate-300">${act1.objectives.map((o) => `<li>${escapeHtml(o)}</li>`).join('')}</ul>
+                </div>
+                <div class="bg-slate-950/70 border border-white/10 rounded-xl p-4 space-y-1.5">
+                  <div class="font-bold uppercase text-purple-400">Assessment Rubric (30 pts)</div>
+                  ${act1.rubric.map((r) => `<div class="text-slate-300"><strong class="text-white">${escapeHtml(r.criteria)} (${r.points} pts):</strong> ${escapeHtml(r.desc)}</div>`).join('')}
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold uppercase tracking-wider text-cyan-300">Interactive PhET Blackbody Spectrum Simulation</span>
+                  <a href="https://phet.colorado.edu/sims/html/blackbody-spectrum/latest/blackbody-spectrum_all.html" target="_blank" rel="noreferrer" class="text-xs text-cyan-400 hover:underline">Open Fullscreen Simulation ↗</a>
+                </div>
+                <div class="w-full h-[460px] rounded-2xl overflow-hidden border border-white/15 bg-black">
+                  <iframe src="https://phet.colorado.edu/sims/html/blackbody-spectrum/latest/blackbody-spectrum_all.html" title="PhET Blackbody Spectrum Simulation" class="w-full h-full border-0" allowfullscreen></iframe>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <h3 class="text-base font-bold text-white">Part A: Blackbody Radiation Observation Table</h3>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                      <tr class="border-b border-white/15 text-xs uppercase text-slate-400">
+                        <th class="py-3 px-3">Object</th>
+                        <th class="py-3 px-3">Temperature (K)</th>
+                        <th class="py-3 px-3">Peak Wavelength (μm)</th>
+                        <th class="py-3 px-3">Intensity (W/m²)</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/10">
+                      ${act1.rows.map((r) => `
+                        <tr>
+                          <td class="py-2.5 px-3 font-bold text-cyan-300">${escapeHtml(r.object)}</td>
+                          <td class="py-2.5 px-3"><input type="text" placeholder="e.g., ${r.defaultTemp}" value="${escapeHtml(state.act1Rows[r.id]?.temp || '')}" oninput="astroActions.updateAct1Cell('${r.id}', 'temp', this.value)" class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-white/15 text-white text-xs" /></td>
+                          <td class="py-2.5 px-3"><input type="text" placeholder="Enter μm" value="${escapeHtml(state.act1Rows[r.id]?.wavelength || '')}" oninput="astroActions.updateAct1Cell('${r.id}', 'wavelength', this.value)" class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-white/15 text-white text-xs" /></td>
+                          <td class="py-2.5 px-3"><input type="text" placeholder="Enter W/m²" value="${escapeHtml(state.act1Rows[r.id]?.intensity || '')}" oninput="astroActions.updateAct1Cell('${r.id}', 'intensity', this.value)" class="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-white/15 text-white text-xs" /></td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <h3 class="text-base font-bold text-white">Part B: Guide Questions</h3>
+                ${act1.guideQuestions.map((gq, idx) => `
+                  <div class="space-y-1.5">
+                    <label class="block text-sm font-medium text-slate-200">${escapeHtml(gq)}</label>
+                    <textarea rows="2" placeholder="Write your scientific observation and explanation..." oninput="astroActions.updateAct1Answer(${idx}, this.value)" class="w-full p-3 rounded-xl bg-slate-950 border border-white/15 text-sm text-white focus:outline-none focus:border-cyan-400">${escapeHtml(state.act1Answers[idx] || '')}</textarea>
+                  </div>
+                `).join('')}
+              </div>
+
+              ${!isTeacher ? `
+                <div class="flex flex-wrap justify-end gap-3 pt-4 border-t border-white/10">
+                  <button type="button" onclick="astroActions.saveActivity('activity1', 'In Progress')" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold">Save Draft Progress</button>
+                  <button type="button" onclick="astroActions.saveActivity('activity1', 'Submitted')" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-bold shadow-lg">Submit Activity 1</button>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        } else if (state.activeActivityTab === 'activity2') {
+          const act2 = state.curriculum.activities.activity2;
+          activityBody = `
+            <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+              <div>
+                <span class="text-xs uppercase tracking-widest text-purple-400 font-bold">Collaborative Classification & Research</span>
+                <h2 class="text-2xl font-extrabold text-white mt-1">${escapeHtml(act2.title)}</h2>
+                <p class="text-sm text-slate-300 mt-2 whitespace-pre-line">${escapeHtml(act2.instructions)}</p>
+              </div>
+
+              <div class="bg-slate-950/80 border border-white/10 rounded-2xl p-5 space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <h3 class="text-base font-bold text-white">Part A: Order the Electromagnetic Spectrum</h3>
+                    <p class="text-xs text-slate-400">Arrange from #1 (LONGEST wavelength / LOWEST frequency) to #7 (SHORTEST wavelength / HIGHEST frequency).</p>
+                  </div>
+                  <div class="flex gap-2">
+                    <button type="button" onclick="astroActions.checkAct2Order()" class="px-3.5 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs">Check Order</button>
+                    <button type="button" onclick="astroActions.resetAct2Order()" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-white text-xs font-semibold">Reset</button>
+                  </div>
+                </div>
+                <div class="space-y-2">
+                  ${state.act2Order.map((wName, idx) => `
+                    <div class="flex items-center justify-between px-4 py-3 rounded-xl bg-slate-900 border border-white/10">
+                      <div class="flex items-center gap-3">
+                        <span class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-bold flex items-center justify-center">${idx + 1}</span>
+                        <span class="font-bold text-sm text-white">${escapeHtml(wName)}</span>
+                      </div>
+                      <div class="flex items-center gap-1.5">
+                        <button type="button" ${idx === 0 ? 'disabled' : ''} onclick="astroActions.moveAct2Wave(${idx}, -1)" class="px-2.5 py-1 rounded bg-white/10 disabled:opacity-30 text-xs font-bold hover:bg-white/20">↑ Up</button>
+                        <button type="button" ${idx === state.act2Order.length - 1 ? 'disabled' : ''} onclick="astroActions.moveAct2Wave(${idx}, 1)" class="px-2.5 py-1 rounded bg-white/10 disabled:opacity-30 text-xs font-bold hover:bg-white/20">↓ Down</button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+                ${state.act2CheckResult ? `
+                  <div class="p-3.5 rounded-xl border text-xs font-medium ${state.act2CheckResult.ok ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-200' : 'bg-amber-500/15 border-amber-500/40 text-amber-200'}">
+                    ${escapeHtml(state.act2CheckResult.msg)}
+                  </div>
+                ` : ''}
+              </div>
+
+              <div class="space-y-4">
+                <h3 class="text-base font-bold text-white">Part B: Assigned Electromagnetic Wave Research Output</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label class="block text-xs text-slate-400 mb-1">Assigned EM Wave</label>
+                    <select onchange="astroActions.updateAct2Brief('assignedWave', this.value)" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/15 text-sm text-white">
+                      ${state.curriculum.emWaves.map((w) => `<option value="${escapeHtml(w.name)}" ${state.act2Brief.assignedWave === w.name ? 'selected' : ''}>${escapeHtml(w.name)}</option>`).join('')}
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs text-slate-400 mb-1">Wavelength Range</label>
+                    <input type="text" placeholder="e.g., 700 nm – 1 mm" value="${escapeHtml(state.act2Brief.wavelengthRange)}" oninput="astroActions.updateAct2Brief('wavelengthRange', this.value)" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/15 text-sm text-white" />
+                  </div>
+                  <div>
+                    <label class="block text-xs text-slate-400 mb-1">Frequency Range</label>
+                    <input type="text" placeholder="e.g., 300 GHz – 430 THz" value="${escapeHtml(state.act2Brief.frequencyRange)}" oninput="astroActions.updateAct2Brief('frequencyRange', this.value)" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/15 text-sm text-white" />
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-400 mb-1">Astronomical Applications & Space Telescopes</label>
+                  <textarea rows="2" placeholder="Describe how astronomers use this wave band..." oninput="astroActions.updateAct2Brief('astroApplications', this.value)" class="w-full p-3 rounded-xl bg-slate-950 border border-white/15 text-sm text-white">${escapeHtml(state.act2Brief.astroApplications)}</textarea>
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-400 mb-1">Research Findings & Group Presentation Summary</label>
+                  <textarea rows="3" placeholder="Summarize your comparative chart findings..." oninput="astroActions.updateAct2Brief('researchFindings', this.value)" class="w-full p-3 rounded-xl bg-slate-950 border border-white/15 text-sm text-white">${escapeHtml(state.act2Brief.researchFindings)}</textarea>
+                </div>
+              </div>
+
+              ${!isTeacher ? `
+                <div class="flex flex-wrap justify-end gap-3 pt-4 border-t border-white/10">
+                  <button type="button" onclick="astroActions.saveActivity('activity2', 'In Progress')" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold">Save Draft Progress</button>
+                  <button type="button" onclick="astroActions.saveActivity('activity2', 'Submitted')" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-bold shadow-lg">Submit Activity 2</button>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        } else {
+          const act3 = state.curriculum.activities.activity3;
+          const isSubmitted = currentSub?.status === 'Submitted' || currentSub?.status === 'Graded';
+          activityBody = `
+            <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+              <div>
+                <span class="text-xs uppercase tracking-widest text-pink-400 font-bold">Astrophysical Scenario Challenge</span>
+                <h2 class="text-2xl font-extrabold text-white mt-1">${escapeHtml(act3.title)}</h2>
+                <p class="text-sm text-slate-300 mt-2">${escapeHtml(act3.instructions)}</p>
+              </div>
+              <div class="space-y-5">
+                ${act3.scenarios.map((sc) => {
+                  const chosenWave = state.act3Responses[sc.id]?.wave || '';
+                  const isCorrect = chosenWave === sc.correctWave;
+                  return `
+                    <div class="p-5 rounded-2xl bg-slate-950/75 border border-white/10 space-y-3">
+                      <h4 class="font-bold text-base text-cyan-300">${escapeHtml(sc.title)}</h4>
+                      <p class="text-sm text-slate-200 leading-relaxed">${escapeHtml(sc.description)}</p>
+                      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+                        <div>
+                          <label class="block text-xs text-slate-400 mb-1">Select Electromagnetic Wave</label>
+                          <select onchange="astroActions.updateAct3Response('${sc.id}', 'wave', this.value)" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-white/15 text-sm text-white">
+                            <option value="">-- Choose Wave Band --</option>
+                            ${state.curriculum.emWaves.map((w) => `<option value="${escapeHtml(w.name)}" ${chosenWave === w.name ? 'selected' : ''}>${escapeHtml(w.name)}</option>`).join('')}
+                          </select>
+                        </div>
+                        <div class="md:col-span-2">
+                          <label class="block text-xs text-slate-400 mb-1">Scientific Justification</label>
+                          <input type="text" placeholder="Explain why this wave band matches..." value="${escapeHtml(state.act3Responses[sc.id]?.explanation || '')}" oninput="astroActions.updateAct3Response('${sc.id}', 'explanation', this.value)" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-white/15 text-sm text-white" />
+                        </div>
+                      </div>
+                      ${isSubmitted ? `
+                        <div class="p-3 rounded-xl border text-xs mt-2 ${isCorrect ? 'bg-emerald-500/15 border-emerald-500/35 text-emerald-200' : 'bg-amber-500/15 border-amber-500/35 text-amber-200'}">
+                          <strong>${isCorrect ? `✓ Correct (${escapeHtml(sc.correctWave)}): ` : `Recommended Wave: ${escapeHtml(sc.correctWave)} — `}</strong>
+                          ${escapeHtml(sc.explanation)}
+                        </div>
+                      ` : ''}
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+              ${!isTeacher ? `
+                <div class="flex flex-wrap justify-end gap-3 pt-4 border-t border-white/10">
+                  <button type="button" onclick="astroActions.saveActivity('activity3', 'In Progress')" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold">Save Draft Progress</button>
+                  <button type="button" onclick="astroActions.saveActivity('activity3', 'Submitted')" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-bold shadow-lg">Submit Activity 3</button>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }
+
+        bodyHtml = `
+          <div class="space-y-6">
+            <div class="flex flex-wrap gap-2.5">
+              ${[
+                { id: 'activity1', label: 'Activity 1: Blackbody Simulation' },
+                { id: 'activity2', label: 'Activity 2: Decode EM Spectrum' },
+                { id: 'activity3', label: 'Activity 3: Spectrum Seekers' }
+              ].map((t) => `
+                <button onclick="astroActions.setActivityTab('${t.id}')" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold border transition ${state.activeActivityTab === t.id ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-lg' : 'bg-slate-900/70 text-slate-300 border-white/10'}">
+                  ${escapeHtml(t.label)}
+                </button>
+              `).join('')}
+            </div>
+            ${!isTeacher && activeClass ? `
+              <div class="glass-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span class="text-xs text-slate-400">Submission Status:</span>
+                  <span class="px-3 py-1 rounded-full text-xs font-bold bg-cyan-500/20 text-cyan-200 border border-cyan-500/40">${escapeHtml(status)}</span>
+                  ${currentSub?.grade ? `<span class="text-xs font-bold text-emerald-300">Grade: ${escapeHtml(currentSub.grade)}</span>` : ''}
+                </div>
+                ${currentSub?.feedback ? `<div class="text-xs text-amber-200 bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-xl"><strong>Teacher Feedback:</strong> ${escapeHtml(currentSub.feedback)}</div>` : ''}
+              </div>
+            ` : ''}
+            ${activityBody}
+          </div>
+        `;
+      }
+
+      // ----------------------------------------------------------------------
+      // ASSESSMENTS (PRE & POST)
+      // ----------------------------------------------------------------------
+      if (state.activeTab === 'assessments') {
+        const quiz = state.curriculum.assessments[state.activeAssessmentTab];
+        const savedResult = activeClass
+          ? state.assessmentsData.find((a) => a.studentId === state.userProfile.id && a.classId === activeClass.id && a.type === state.activeAssessmentTab)
+          : null;
+        const q = quiz.questions[state.currentQuizIdx];
+
+        bodyHtml = `
+          <div class="space-y-6">
+            <div class="flex flex-wrap gap-3">
+              <button onclick="astroActions.setAssessmentTab('pre')" class="px-4 py-2.5 rounded-xl text-sm font-bold border transition ${state.activeAssessmentTab === 'pre' ? 'bg-cyan-500 text-slate-950 border-cyan-400' : 'bg-slate-900/70 text-slate-300 border-white/10'}">
+                Pre-Assessment: What I Know?
+              </button>
+              <button onclick="astroActions.setAssessmentTab('post')" class="px-4 py-2.5 rounded-xl text-sm font-bold border transition ${state.activeAssessmentTab === 'post' ? 'bg-purple-500 text-white border-purple-400' : 'bg-slate-900/70 text-slate-300 border-white/10'}">
+                Post-Assessment: What I Have Learned?
+              </button>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+              <div class="border-b border-white/10 pb-4 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <h2 class="text-2xl font-extrabold text-white">${escapeHtml(quiz.title)}</h2>
+                  <p class="text-xs text-slate-400 mt-1">${escapeHtml(quiz.description)}</p>
+                </div>
+                ${savedResult ? `
+                  <div class="px-4 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-right">
+                    <div class="text-xs text-emerald-300 font-bold">Recorded Score</div>
+                    <div class="text-xl font-extrabold text-white">${savedResult.score} / ${savedResult.total} (${savedResult.percentage}%)</div>
+                  </div>
+                ` : ''}
+              </div>
+
+              ${savedResult ? `
+                <div class="space-y-4">
+                  <div class="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-xs text-cyan-200 flex items-center justify-between">
+                    <span>Assessment completed on ${formatDate(savedResult.submittedAt)}. Review your answers and scientific explanations below.</span>
+                    ${activeClass?.allowRetake !== false ? `
+                      <button onclick="astroActions.retakeAssessment('${savedResult.id}')" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold shrink-0 ml-3">Retake Assessment</button>
+                    ` : ''}
+                  </div>
+                  ${savedResult.answers.map((ans) => `
+                    <div class="p-4 rounded-xl border space-y-2 ${ans.isCorrect ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-red-500/10 border-red-500/30'}">
+                      <div class="font-bold text-sm text-white">${escapeHtml(ans.question)}</div>
+                      <div class="text-xs text-slate-300">Your Answer: <strong class="${ans.isCorrect ? 'text-emerald-300' : 'text-red-300'}">${escapeHtml(ans.chosenText)}</strong></div>
+                      ${!ans.isCorrect ? `<div class="text-xs text-emerald-300">Correct Answer: <strong>${escapeHtml(ans.correctText)}</strong></div>` : ''}
+                      <p class="text-xs text-slate-300 bg-slate-950/60 p-2.5 rounded-lg"><strong>Explanation:</strong> ${escapeHtml(ans.explanation)}</p>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : `
+                <div class="space-y-6">
+                  <div class="flex items-center gap-2">
+                    ${quiz.questions.map((item, idx) => `
+                      <button onclick="astroActions.setQuizIdx(${idx})" class="w-9 h-9 rounded-xl font-bold text-xs border transition ${state.currentQuizIdx === idx ? 'bg-cyan-500 text-slate-950 border-cyan-400' : state.quizAnswers[item.id] !== undefined ? 'bg-purple-500/25 text-purple-200 border-purple-400/40' : 'bg-slate-950 text-slate-400 border-white/10'}">
+                        ${idx + 1}
+                      </button>
+                    `).join('')}
+                  </div>
+
+                  <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-white">${escapeHtml(q.question)}</h3>
+                    <div class="space-y-2.5">
+                      ${q.options.map((opt, optIdx) => {
+                        const selected = state.quizAnswers[q.id] === optIdx;
+                        return `
+                          <button type="button" onclick="astroActions.selectQuizOption('${q.id}', ${optIdx})" class="w-full text-left p-4 rounded-xl border text-sm transition flex items-center gap-3 ${selected ? 'bg-cyan-500/20 border-cyan-400 text-white font-semibold' : 'bg-slate-950/70 border-white/10 text-slate-300 hover:border-white/25'}">
+                            <span class="w-6 h-6 rounded-full border border-current flex items-center justify-center text-xs shrink-0">${String.fromCharCode(65 + optIdx)}</span>
+                            <span>${escapeHtml(opt)}</span>
+                          </button>
+                        `;
+                      }).join('')}
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                    <button type="button" ${state.currentQuizIdx === 0 ? 'disabled' : ''} onclick="astroActions.setQuizIdx(${state.currentQuizIdx - 1})" class="px-4 py-2 rounded-xl bg-white/10 disabled:opacity-40 text-xs font-bold">← Previous</button>
+                    ${state.currentQuizIdx < quiz.questions.length - 1
+                      ? `<button type="button" onclick="astroActions.setQuizIdx(${state.currentQuizIdx + 1})" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold">Next →</button>`
+                      : `<button type="button" onclick="astroActions.submitAssessment('${state.activeAssessmentTab}')" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold shadow-lg">Submit Assessment</button>`
+                    }
+                  </div>
+                </div>
+              `}
+            </div>
+          </div>
+        `;
+      }
+
+      // ----------------------------------------------------------------------
+      // TEACHER SUBMISSIONS HUB
+      // ----------------------------------------------------------------------
+      if (state.activeTab === 'submissions' && isTeacher) {
+        const ownedIds = myClasses.map((c) => c.id);
+        const filteredSubs = state.submissions.filter(
+          (s) => ownedIds.includes(s.classId) && (state.submissionFilter === 'All' || s.status === state.submissionFilter)
+        );
+        bodyHtml = `
+          <div class="space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h2 class="text-2xl font-extrabold text-white">STUDENT SUBMISSIONS</h2>
+                <p class="text-xs text-slate-400">Review student activity outputs, assign grades, and send constructive feedback.</p>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                ${['All', 'Submitted', 'In Progress', 'Graded', 'Returned for Revision'].map((st) => `
+                  <button onclick="astroActions.setSubmissionFilter('${st}')" class="px-3 py-1.5 rounded-xl text-xs font-bold border transition ${state.submissionFilter === st ? 'bg-cyan-500 text-slate-950 border-cyan-400' : 'bg-slate-900/70 text-slate-300 border-white/10'}">
+                    ${escapeHtml(st)}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="glass-card rounded-2xl overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                  <thead>
+                    <tr class="border-b border-white/10 text-xs uppercase text-slate-400">
+                      <th class="py-3.5 px-4">Student</th>
+                      <th class="py-3.5 px-4">Class</th>
+                      <th class="py-3.5 px-4">Activity</th>
+                      <th class="py-3.5 px-4">Date</th>
+                      <th class="py-3.5 px-4">Status</th>
+                      <th class="py-3.5 px-4">Grade</th>
+                      <th class="py-3.5 px-4">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-white/5">
+                    ${filteredSubs.length === 0
+                      ? '<tr><td colspan="7" class="py-8 text-center text-xs text-slate-500">No student submissions match the current filter.</td></tr>'
+                      : filteredSubs.map((sub) => `
+                        <tr class="hover:bg-white/5">
+                          <td class="py-3.5 px-4 font-bold text-white">${escapeHtml(sub.studentName)}</td>
+                          <td class="py-3.5 px-4 text-xs text-slate-300">${escapeHtml(sub.className)}</td>
+                          <td class="py-3.5 px-4 text-xs text-cyan-300 font-semibold">${escapeHtml(sub.activityTitle)}</td>
+                          <td class="py-3.5 px-4 text-xs text-slate-400">${formatDate(sub.submittedAt || sub.updatedAt)}</td>
+                          <td class="py-3.5 px-4"><span class="px-2.5 py-0.5 rounded-full text-xs bg-white/10 text-slate-200">${escapeHtml(sub.status)}</span></td>
+                          <td class="py-3.5 px-4 text-xs font-bold text-emerald-300">${escapeHtml(sub.grade || '—')}</td>
+                          <td class="py-3.5 px-4">
+                            <button onclick="astroActions.openReviewSubmission('${sub.id}')" class="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-200 text-xs font-bold">Inspect & Grade</button>
+                          </td>
+                        </tr>
+                      `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // ----------------------------------------------------------------------
+      // TEACHER CONTENT EDITOR
+      // ----------------------------------------------------------------------
+      if (state.activeTab === 'editor' && isTeacher) {
+        const target = state.editorDraft || state.curriculum.lessons.find((l) => l.id === state.editorLessonId) || state.curriculum.lessons[0];
+        bodyHtml = `
+          <div class="space-y-6">
+            <div>
+              <h2 class="text-2xl font-extrabold text-white">Curriculum Content Editor</h2>
+              <p class="text-xs text-slate-400">Customize lesson explanations and learning objectives. Changes save persistently to the database for all students.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div class="lg:col-span-4 space-y-2">
+                ${state.curriculum.lessons.map((l) => `
+                  <button onclick="astroActions.selectEditorLesson('${l.id}')" class="w-full text-left p-3.5 rounded-xl border text-xs font-bold transition ${(state.editorDraft?.id || state.editorLessonId) === l.id ? 'bg-cyan-500/20 border-cyan-400 text-white' : 'bg-slate-900/70 border-white/10 text-slate-300'}">
+                    Module ${escapeHtml(l.number)}: ${escapeHtml(l.title)}
+                  </button>
+                `).join('')}
+              </div>
+
+              <div class="lg:col-span-8 glass-card rounded-2xl p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                  <h3 class="font-bold text-white">Editing: ${escapeHtml(target.title)}</h3>
+                  <div class="flex gap-2">
+                    <button type="button" onclick="astroActions.toggleEditorPreview()" class="px-3 py-1.5 rounded-lg bg-white/10 text-xs font-semibold text-white">${state.editorPreview ? 'Back to Edit' : 'Preview'}</button>
+                    <button type="button" onclick="astroActions.saveCurriculumEdit()" class="px-4 py-1.5 rounded-lg bg-cyan-500 text-slate-950 font-bold text-xs">Save Changes</button>
+                  </div>
+                </div>
+                ${state.editorPreview ? `
+                  <div class="space-y-3 p-4 rounded-xl bg-slate-950 border border-white/10">
+                    <h4 class="text-xl font-bold text-white">${escapeHtml(target.title)}</h4>
+                    <p class="text-xs text-cyan-400">${escapeHtml(target.summary)}</p>
+                    <div class="text-sm text-slate-200 whitespace-pre-line">${escapeHtml(target.content)}</div>
+                  </div>
+                ` : `
+                  <div class="space-y-4">
+                    <div>
+                      <label class="block text-xs text-slate-400 mb-1">Module Title</label>
+                      <input type="text" value="${escapeHtml(target.title)}" oninput="astroActions.updateEditorField('title', this.value)" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/15 text-sm text-white" />
+                    </div>
+                    <div>
+                      <label class="block text-xs text-slate-400 mb-1">Summary</label>
+                      <input type="text" value="${escapeHtml(target.summary)}" oninput="astroActions.updateEditorField('summary', this.value)" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/15 text-sm text-white" />
+                    </div>
+                    <div>
+                      <label class="block text-xs text-slate-400 mb-1">Lesson Body Text</label>
+                      <textarea rows="8" oninput="astroActions.updateEditorField('content', this.value)" class="w-full p-3 rounded-xl bg-slate-950 border border-white/15 text-sm text-white">${escapeHtml(target.content)}</textarea>
+                    </div>
+                  </div>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // ----------------------------------------------------------------------
+      // MODALS (CREATE CLASS, EDIT CLASS, STUDENT TELEMETRY, GRADE REVIEW)
+      // ----------------------------------------------------------------------
+      let modalsHtml = '';
+
+      if (state.showCreateClassModal) {
+        modalsHtml += `
+          <div class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-slate-900 border border-white/15 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-extrabold text-white">Create New ASTROKIT Class</h3>
+                <button onclick="astroActions.openCreateClassModal(false)" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+              </div>
+              <form onsubmit="astroActions.createClass(event)" class="space-y-3.5">
+                <div>
+                  <label class="block text-xs text-slate-400 mb-1">Class Name *</label>
+                  <input type="text" name="className" required placeholder="e.g., ASTROKIT – Grade 9 Einstein" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-white/15 text-sm text-white" />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs text-slate-400 mb-1">Grade Level</label>
+                    <input type="text" name="gradeLevel" value="Grade 9" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-white/15 text-sm text-white" />
+                  </div>
+                  <div>
+                    <label class="block text-xs text-slate-400 mb-1">Section</label>
+                    <input type="text" name="section" placeholder="e.g., Section Galileo" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-white/15 text-sm text-white" />
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-400 mb-1">Subject</label>
+                  <input type="text" name="subject" value="Grade 9 Science — Space Radiation" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-white/15 text-sm text-white" />
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-400 mb-1">Description</label>
+                  <textarea name="description" rows="2" placeholder="Optional class overview..." class="w-full p-3 rounded-xl bg-slate-950 border border-white/15 text-sm text-white"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                  <button type="button" onclick="astroActions.openCreateClassModal(false)" class="px-4 py-2 rounded-xl bg-white/10 text-xs font-bold text-white">Cancel</button>
+                  <button type="submit" class="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold">Generate Class & Code</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        `;
+      }
+
+      if (state.editingClass) {
+        modalsHtml += `
+          <div class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-slate-900 border border-white/15 rounded-2xl max-w-lg w-full p-6 space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-white">Class Settings (${escapeHtml(state.editingClass.code)})</h3>
+                <button onclick="astroActions.openEditClass(null)" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+              </div>
+              <form onsubmit="astroActions.saveEditClass(event)" class="space-y-3">
+                <div>
+                  <label class="block text-xs text-slate-400 mb-1">Class Name</label>
+                  <input type="text" name="className" value="${escapeHtml(state.editingClass.name)}" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/15 text-sm text-white" />
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-400 mb-1">Section</label>
+                  <input type="text" name="section" value="${escapeHtml(state.editingClass.section)}" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/15 text-sm text-white" />
+                </div>
+                <label class="flex items-center gap-2 text-xs text-slate-300 pt-1">
+                  <input type="checkbox" name="allowRetake" ${state.editingClass.allowRetake !== false ? 'checked' : ''} />
+                  Allow students to retake Pre/Post Assessments
+                </label>
+                <div class="flex justify-end gap-2 pt-3">
+                  <button type="button" onclick="astroActions.openEditClass(null)" class="px-4 py-2 rounded-xl bg-white/10 text-xs font-bold">Cancel</button>
+                  <button type="submit" class="px-5 py-2 rounded-xl bg-cyan-500 text-slate-950 text-xs font-bold">Save Settings</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        `;
+      }
+
+      if (state.selectedStudentProgress && activeClass) {
+        const enr = state.selectedStudentProgress;
+        const stuUser = state.allUsers.find((u) => u.id === enr.studentId);
+        const stuSubs = state.submissions.filter((s) => s.classId === activeClass.id && s.studentId === enr.studentId);
+        const preRes = state.assessmentsData.find((a) => a.classId === activeClass.id && a.studentId === enr.studentId && a.type === 'pre');
+        const postRes = state.assessmentsData.find((a) => a.classId === activeClass.id && a.studentId === enr.studentId && a.type === 'post');
+
+        modalsHtml += `
+          <div class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-slate-900 border border-white/15 rounded-2xl max-w-3xl w-full max-h-[88vh] overflow-y-auto p-6 space-y-6">
+              <div class="flex items-start justify-between border-b border-white/10 pb-4">
+                <div>
+                  <span class="text-xs uppercase text-cyan-400 font-bold">Individual Student Telemetry</span>
+                  <h3 class="text-2xl font-extrabold text-white">${escapeHtml(enr.studentName)}</h3>
+                  <p class="text-xs text-slate-400">Class: ${escapeHtml(activeClass.name)} (${escapeHtml(activeClass.code)})</p>
+                </div>
+                <button onclick="astroActions.closeStudentProgress()" class="p-1.5 rounded-lg bg-white/10 text-slate-300 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-slate-950 p-4 rounded-xl border border-white/10">
+                  <div class="text-xs text-slate-400">Pre-Assessment Score</div>
+                  <div class="text-2xl font-extrabold text-cyan-300 mt-1">${preRes ? preRes.percentage + '%' : 'Not Taken'}</div>
+                  <div class="w-full h-2 bg-white/10 rounded-full mt-2 overflow-hidden"><div class="h-full bg-cyan-400" style="width: ${preRes?.percentage || 0}%"></div></div>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-white/10">
+                  <div class="text-xs text-slate-400">Post-Assessment Score</div>
+                  <div class="text-2xl font-extrabold text-purple-300 mt-1">${postRes ? postRes.percentage + '%' : 'Not Taken'}</div>
+                  <div class="w-full h-2 bg-white/10 rounded-full mt-2 overflow-hidden"><div class="h-full bg-purple-400" style="width: ${postRes?.percentage || 0}%"></div></div>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-white/10">
+                  <div class="text-xs text-slate-400">Cosmo AI Guide Usage</div>
+                  <div class="text-2xl font-extrabold text-pink-300 mt-1">${stuUser?.aiQueriesCount || 0} Prompts</div>
+                  <div class="text-[11px] text-slate-400 mt-1">Guided Socratic hints used</div>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <h4 class="text-sm font-bold uppercase text-cyan-400">Submitted Activity Outputs (${stuSubs.length})</h4>
+                ${stuSubs.length === 0 ? '<p class="text-xs text-slate-500">No activity submissions recorded yet.</p>' : stuSubs.map((sub) => `
+                  <div class="p-4 rounded-xl bg-slate-950/80 border border-white/10 space-y-2 text-xs">
+                    <div class="flex items-center justify-between">
+                      <span class="font-bold text-sm text-white">${escapeHtml(sub.activityTitle)}</span>
+                      <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded bg-cyan-500/20 text-cyan-200">${escapeHtml(sub.status)}</span>
+                        <button onclick="astroActions.openReviewSubmission('${sub.id}')" class="px-2.5 py-1 rounded bg-purple-500/20 text-purple-200 font-bold">Grade / Feedback</button>
+                      </div>
+                    </div>
+                    <pre class="text-[11px] text-slate-300 bg-black/50 p-3 rounded-lg overflow-x-auto whitespace-pre-wrap">${escapeHtml(JSON.stringify(sub.data, null, 2))}</pre>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (state.reviewingSubmission) {
+        const sub = state.reviewingSubmission;
+        modalsHtml += `
+          <div class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-slate-900 border border-white/15 rounded-2xl max-w-2xl w-full max-h-[88vh] overflow-y-auto p-6 space-y-5">
+              <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <div>
+                  <h3 class="text-lg font-extrabold text-white">${escapeHtml(sub.activityTitle)}</h3>
+                  <p class="text-xs text-cyan-400">Student: ${escapeHtml(sub.studentName)} • ${escapeHtml(sub.className)}</p>
+                </div>
+                <button onclick="astroActions.closeReviewSubmission()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+              </div>
+              <div class="space-y-2">
+                <div class="text-xs font-bold uppercase text-slate-400">Student Output Data</div>
+                <pre class="text-xs text-slate-200 bg-slate-950 p-4 rounded-xl border border-white/10 overflow-x-auto whitespace-pre-wrap max-h-60">${escapeHtml(JSON.stringify(sub.data, null, 2))}</pre>
+              </div>
+              <form onsubmit="astroActions.saveGradeReview(event)" class="space-y-3.5">
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs text-slate-400 mb-1">Grade / Score</label>
+                    <input type="text" name="grade" placeholder="e.g., 28/30 or 95%" value="${escapeHtml(sub.grade || '')}" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/15 text-sm text-white" />
+                  </div>
+                  <div>
+                    <label class="block text-xs text-slate-400 mb-1">Submission Status</label>
+                    <select name="status" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/15 text-sm text-white">
+                      <option value="Graded" ${sub.status === 'Graded' || sub.status === 'Submitted' ? 'selected' : ''}>Graded (Completed)</option>
+                      <option value="Returned for Revision" ${sub.status === 'Returned for Revision' ? 'selected' : ''}>Returned for Revision</option>
+                      <option value="Submitted">Submitted</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-400 mb-1">Written Teacher Feedback</label>
+                  <textarea name="feedback" rows="3" placeholder="Provide encouraging feedback and scientific guidance..." class="w-full p-3 rounded-xl bg-slate-950 border border-white/15 text-sm text-white">${escapeHtml(sub.feedback || '')}</textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                  <button type="button" onclick="astroActions.closeReviewSubmission()" class="px-4 py-2 rounded-xl bg-white/10 text-xs font-bold">Cancel</button>
+                  <button type="submit" class="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold">Save Grade & Feedback</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        `;
+      }
+
+      // ----------------------------------------------------------------------
+      // COSMO AI FLOATING PANEL
+      // ----------------------------------------------------------------------
+      const cosmoHtml = `
+        <div class="fixed bottom-4 right-4 z-40">
+          ${!state.cosmoOpen ? `
+            <button onclick="astroActions.toggleCosmo(true)" class="flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 text-white font-bold text-xs sm:text-sm shadow-2xl shadow-purple-600/40 hover:scale-105 transition">
+              <i data-lucide="bot" class="w-5 h-5"></i>
+              <span>COSMO AI Guide</span>
+            </button>
+          ` : `
+            <div class="w-[92vw] sm:w-96 bg-slate-900/95 backdrop-blur-2xl border border-purple-400/40 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+              <div class="p-3.5 bg-gradient-to-r from-purple-900/80 to-indigo-900/80 border-b border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-xl bg-purple-500/30 border border-purple-300/40 flex items-center justify-center">
+                    <i data-lucide="bot" class="w-4 h-4 text-purple-200"></i>
+                  </div>
+                  <div>
+                    <div class="text-xs font-extrabold text-white">COSMO — AI Space Guide</div>
+                    <div class="text-[10px] text-purple-200">${state.activeTab === 'assessments' ? 'Assessment Safeguard Mode Active' : 'Grade 9 Science Socratic Tutor'}</div>
+                  </div>
+                </div>
+                <button onclick="astroActions.toggleCosmo(false)" class="p-1.5 rounded-lg text-slate-300 hover:text-white"><i data-lucide="minimize-2" class="w-4 h-4"></i></button>
+              </div>
+
+              <div class="p-2 bg-slate-950/90 border-b border-white/10 grid grid-cols-2 gap-1.5">
+                ${['Explain This', 'Give Me a Hint', 'Help Me Understand the Activity', 'Check My Reasoning'].map((m) => `
+                  <button onclick="astroActions.setCosmoMode('${m}')" class="px-2 py-1.5 rounded-lg text-[10px] font-bold text-left truncate transition ${state.cosmoMode === m ? 'bg-purple-600 text-white' : 'bg-white/5 text-slate-400 hover:text-white'}">
+                    ${escapeHtml(m)}
+                  </button>
+                `).join('')}
+              </div>
+
+              <div id="cosmo-feed" class="p-3.5 h-72 overflow-y-auto space-y-3 text-xs">
+                ${state.cosmoMessages.map((msg) => `
+                  <div class="p-3 rounded-xl leading-relaxed whitespace-pre-line ${msg.sender === 'user' ? 'bg-cyan-600/25 border border-cyan-500/30 text-white ml-6' : 'bg-white/5 border border-white/10 text-slate-200 mr-4'}">
+                    ${escapeHtml(msg.text)}
+                  </div>
+                `).join('')}
+                ${state.cosmoLoading ? '<div class="text-[11px] text-purple-300 animate-pulse px-2">Cosmo is analyzing cosmic wavelengths...</div>' : ''}
+              </div>
+
+              <form onsubmit="astroActions.sendCosmo(event)" class="p-2.5 bg-slate-950 border-t border-white/10 flex gap-2">
+                <input id="cosmo-input" type="text" placeholder="Ask Cosmo (${escapeHtml(state.cosmoMode)})..." class="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-white/15 text-xs text-white focus:outline-none focus:border-purple-400" />
+                <button type="submit" ${state.cosmoLoading ? 'disabled' : ''} class="p-2 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white"><i data-lucide="send" class="w-4 h-4"></i></button>
+              </form>
+            </div>
+          `}
+        </div>
+      `;
+
+      return `
+        <div class="min-h-screen bg-slate-950 text-slate-100 flex flex-col lg:flex-row overflow-x-hidden">
+          ${state.toast ? `
+            <div class="fixed top-4 right-4 z-50 px-4 py-3 rounded-xl border shadow-2xl backdrop-blur-xl flex items-center gap-2.5 text-sm font-medium ${state.toast.type === 'error' ? 'bg-red-950/90 border-red-500/50 text-red-100' : 'bg-slate-900/95 border-cyan-500/50 text-cyan-100'}">
+              <span>${escapeHtml(state.toast.msg)}</span>
+            </div>
+          ` : ''}
+
+          <!-- Responsive Sidebar -->
+          <aside class="fixed inset-y-0 left-0 z-40 w-72 bg-slate-900/95 backdrop-blur-xl border-r border-white/10 transform transition-transform duration-200 lg:static lg:translate-x-0 flex flex-col justify-between ${state.mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}">
+            <div>
+              <div class="p-5 border-b border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+                    <i data-lucide="rocket" class="w-5 h-5 text-white"></i>
+                  </div>
+                  <div>
+                    <div class="font-extrabold tracking-wider text-sm text-white">ASTROKIT</div>
+                    <div class="text-[10px] uppercase tracking-widest text-cyan-400">Beyond the Visible</div>
+                  </div>
+                </div>
+                <button onclick="astroActions.toggleMobileMenu(false)" class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+              </div>
+
+              <div class="p-4 border-b border-white/10">
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">Active Classroom</label>
+                ${myClasses.length > 0 ? `
+                  <select onchange="astroActions.selectClass(this.value)" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/15 text-xs font-semibold text-white focus:outline-none focus:border-cyan-400">
+                    ${myClasses.map((c) => `<option value="${c.id}" ${state.selectedClassId === c.id ? 'selected' : ''}>${escapeHtml(c.name)} (${escapeHtml(c.code)})</option>`).join('')}
+                  </select>
+                ` : `<div class="text-xs text-slate-400 bg-slate-950/70 p-2.5 rounded-xl border border-white/10">${isTeacher ? 'No classes created yet.' : 'No class joined yet.'}</div>`}
+              </div>
+
+              <nav class="p-3 space-y-1">
+                ${navItems.map((item) => {
+                  const active = state.activeTab === item.id;
+                  return `
+                    <button onclick="astroActions.setTab('${item.id}')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition ${active ? 'bg-gradient-to-r from-cyan-600/30 to-purple-600/30 border border-cyan-500/40 text-white shadow' : 'text-slate-400 hover:text-white hover:bg-white/5'}">
+                      <i data-lucide="${item.icon}" class="w-4 h-4 ${active ? 'text-cyan-400' : ''}"></i>
+                      <span>${escapeHtml(item.label)}</span>
+                    </button>
+                  `;
+                }).join('')}
+              </nav>
+            </div>
+
+            <div class="p-4 border-t border-white/10 space-y-3">
+              <button onclick="astroActions.toggleReadingMode()" class="w-full flex items-center justify-between px-3 py-2 rounded-xl border text-xs font-medium transition ${state.readingMode ? 'bg-amber-500/15 border-amber-400/40 text-amber-200' : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'}">
+                <span>Reading-Friendly Mode</span>
+                <span class="font-bold">${state.readingMode ? 'ON' : 'OFF'}</span>
+              </button>
+
+              <div class="flex items-center justify-between bg-slate-950/80 p-3 rounded-xl border border-white/10">
+                <div class="min-w-0">
+                  <div class="text-xs font-bold text-white truncate">${escapeHtml(state.userProfile.name)}</div>
+                  <div class="text-[11px] text-cyan-400 capitalize flex items-center gap-1">${escapeHtml(state.userProfile.role)}</div>
+                </div>
+                <button onclick="astroActions.logout()" title="Sign Out" class="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-white/5 transition">
+                  <i data-lucide="log-out" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Main Content -->
+          <div class="flex-1 flex flex-col min-w-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-950/40 via-slate-950 to-slate-950">
+            <header class="sticky top-0 z-30 bg-slate-950/80 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <button onclick="astroActions.toggleMobileMenu(true)" class="lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 text-slate-200"><i data-lucide="menu" class="w-5 h-5"></i></button>
+                <div>
+                  <h1 class="text-base sm:text-lg font-bold text-white">${isTeacher ? 'MISSION CONTROL — TEACHER DASHBOARD' : 'MY SPACE MISSION'}</h1>
+                  <p class="text-xs text-slate-400 hidden sm:block">Exploring Space Radiation and the Electromagnetic Spectrum</p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2.5">
+                ${isTeacher ? `
+                  <button onclick="astroActions.openCreateClassModal(true)" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-bold shadow-lg shadow-cyan-500/20">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Create Class
+                  </button>
+                ` : ''}
+                <button onclick="astroActions.toggleCosmo()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-purple-600/25 border border-purple-400/40 hover:bg-purple-600/35 text-purple-200 text-xs font-bold">
+                  <i data-lucide="bot" class="w-4 h-4 text-purple-300"></i>
+                  <span class="hidden sm:inline">Ask Cosmo AI</span>
+                </button>
+              </div>
+            </header>
+
+            <main class="flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto space-y-8 pb-24">
+              ${bodyHtml}
+            </main>
+          </div>
+
+          ${modalsHtml}
+          ${cosmoHtml}
+        </div>
+      `;
+    }
+
+    // ========================================================================
+    // 9. ROOT RENDERER
+    // ========================================================================
+    function render() {
+      const root = document.getElementById('app');
+      if (!root) return;
+
+      if (!state.authReady) return;
+      if (!state.userProfile) {
+        root.innerHTML = renderAuthGateway();
+      } else {
+        root.innerHTML = renderMainApp();
+      }
+
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+      const feed = document.getElementById('cosmo-feed');
+      if (feed) {
+        feed.scrollTop = feed.scrollHeight;
+      }
+    }
+  </script>
+</body>
+</html>
